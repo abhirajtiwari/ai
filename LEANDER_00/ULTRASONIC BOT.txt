@@ -1,0 +1,84 @@
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+
+trigPin1 = 16
+echoPin1 = 18
+
+trigPin2 = 12
+echoPin2 = 22
+
+threshold = 17
+
+GPIO.setup(trigPin1, GPIO.OUT)
+GPIO.setup(echoPin1, GPIO.IN)
+
+GPIO.setup(trigPin2, GPIO.OUT)
+GPIO.setup(echoPin2, GPIO.IN)
+
+t1=0.000000
+t2=0.000000
+t3=0.000000
+t4=0.000000
+
+
+while 1:
+
+    GPIO.output(trigPin1, True)
+    time.sleep(0.00001)
+    GPIO.output(trigPin1, False)
+    tax1=time.time()
+    while GPIO.input(echoPin1) == 0:
+        tax2=time.time()
+        tax3=tax2-tax1
+        if tax3>0.00230:
+           print("FORWARD")
+
+
+    while GPIO.input(echoPin1) == 1:
+        pass
+    t2 = time.time()
+
+    duration1 = t2 - t1
+
+    distance1 = duration1*17000
+
+    GPIO.output(trigPin2, True)
+    time.sleep(0.00001)
+    GPIO.output(trigPin2, False)
+    tax4=time.time()
+    while GPIO.input(echoPin2) == 0:
+        tax5=time.time()
+        tax6=tax5-tax4
+        if tax6>0.00230:
+           print("FORWARD")
+
+    t3 = time.time()
+    while GPIO.input(echoPin2) == 1:
+        pass
+
+    t4 = time.time()
+
+
+
+    duration2 = t4 - t3
+
+    distance2 = duration2*17000
+
+
+    if (distance1 > threshold) and (distance2 > threshold):
+        print("FORWARD")
+
+    elif (distance1 > threshold) and (distance2 < threshold):
+        print("LEFT")
+
+    elif (threshold<distance2) and (distance1 < threshold):
+        print("RIGHT")
+
+    elif (distance1 < threshold) and (distance2 < threshold):
+        print("BACKWARD")
+
+GPIO.cleanup()
+
