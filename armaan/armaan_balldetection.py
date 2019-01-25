@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import imutils 
+#import imutils 
 def nothing(x):
     pass
 cap=cv2.VideoCapture(0)
@@ -52,7 +52,7 @@ while(1):
     prev=0
     curr=0
     
-    r,contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     update=[] 
     if len(contours)!=0:
        for i in contours:

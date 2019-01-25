@@ -1,8 +1,9 @@
 import cv2
+import cv2.cv as cv
 import numpy as np
 
 cap = cv2.VideoCapture(0)
-kernel = np.ones((5,5),np.float32)
+kernel = np.ones((3,3),np.float32)
 
 while True:
     _, frame = cap.read()
@@ -20,7 +21,7 @@ while True:
 #HOUGH_CIRCLES
 
 
-    circles = cv2.HoughCircles(dilation, cv2.HOUGH_GRADIENT, 1, 200, param1=255, param2=25, minRadius=0, maxRadius=0)
+    circles = cv2.HoughCircles(dilation, cv.CV_HOUGH_GRADIENT, 1, 200, param1=255, param2=25, minRadius=0, maxRadius=0)
     #     # print circles
 
     # ensure at least some circles were found
@@ -55,7 +56,7 @@ while True:
 
             #***********for rotated rectangle*******************
             rect = cv2.minAreaRect(counter)
-            box = cv2.boxPoints(rect)
+            box = cv2.cv.BoxPoints(rect)
             box = np.int0(box)
 
             x1 = box[0, 0]
