@@ -15,8 +15,8 @@ for event in pygame.event.get():
         print('not on the axis')
 
 
-        print('x_value',x_value)
-        print('y_value',y_value)
+    print('x_value',x_value)
+    print('y_value',y_value)
 
 
 #quad 1
