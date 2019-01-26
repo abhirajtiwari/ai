@@ -4,11 +4,11 @@ from pygame import locals
 speedA =0.000
 speedB =0.000
 
-X=0.00
-Y=0.00
+x=512.00
+y=512.00
 
 def arduino_map(x, in_min, in_max, out_min, out_max):
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+  return ((x - in_min) * (out_max - out_min) / (in_max - in_min)) + out_min
 
 def oct1(x,y):
     speedA = arduino_map(y,1023,512,255,0)
@@ -73,10 +73,10 @@ while 1:
 	for e in pygame.event.get(): # iterate over event stack
                 if e.type == pygame.locals.JOYAXISMOTION:
                     x ,y =  j.get_axis(0) ,j.get_axis(1)
-                    X=arduino_map(x, -1, 1, 0, 1024)
-                    Y=arduino_map(y, -1, 1, 0, 1024)
-                    print("X=",X)
-                    print("Y=",Y)
+                    x=arduino_map(x, -1, 1, 0, 1024)
+                    y=arduino_map(y, -1, 1, 0, 1024)
+                    print("X=",x)
+                    print("Y=",y)
 
                     #QUAD 1
                     if (x <= 512) &  ((y >= 512) &  (y <= 1023)):
