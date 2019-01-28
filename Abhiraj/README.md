@@ -1,4 +1,4 @@
-##Files
+## Files
 - <b>abhiraj_balldet.py</b>: using color detection, hough circles, elimination using centroid matching.
  **Errors**
  1. Detects a roundish bottle as ball. *Reason -* Hough circles. *Solution -* use centroid of contour to eliminate.
