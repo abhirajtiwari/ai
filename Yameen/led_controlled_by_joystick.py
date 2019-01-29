@@ -14,7 +14,10 @@ y_value = 0.00
 
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(ledpin,GPIO.OUT)
+GPIO.setup(l_fwd,GPIO.OUT)
+GPIO.setup(l_bck,GPIO.OUT)
+GPIO.setup(r_fwd,GPIO.OUT)
+GPIO.setup(r_bck,GPIO.OUT)
 
 l_fwd = 35                      #change the pins
 r_fwd = 36                      #change the pins
