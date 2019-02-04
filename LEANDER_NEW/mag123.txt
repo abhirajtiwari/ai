@@ -1,5 +1,6 @@
 import smbus
 import time
+import math
 
 bus = smbus.SMBus(1)
 
@@ -35,7 +36,7 @@ while(True):
 	#print("Z=",z, "gauss")
 
 	print("")
-	print("HEADING:",atan2(out_y_m/out_x_m))
+	print("HEADING:",math.atan(y/x))
 
 	#HARD IRON DISTORTION
 
