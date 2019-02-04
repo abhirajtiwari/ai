@@ -1,0 +1,29 @@
+import smbus
+import time
+
+bus = smbus.SMBus(1)
+
+def twos_complement(val, bits):
+    if (val & (1 << (bits - 1))) != 0:
+        val = val - (1 << bits)
+    return val
+
+bus.write_byte_data(0x1E, 0x20, 0b01111100)
+bus.write_byte_data(0x1E, 0x21, 0b00000000)
+bus.write_byte_data(0x1E, 0x22, 0b00000000)
+bus.write_byte_data(0x1E, 0x23, 0b00001100)
+
+print("***** magnetometer  *****")
+out_x_m_l = bus.read_byte_data(0x1E, 0x28)
+out_x_m_h = bus.read_byte_data(0x1E, 0x29)
+out_x_m = twos_complement((out_x_m_h << 8) | out_x_m_l, 16) / 1e3
+print("OUT_X_M:", out_x_m, "gauss")
+out_y_m_l = bus.read_byte_data(0x1E, 0x2A)
+out_y_m_h = bus.read_byte_data(0x1E, 0x2B)
+out_y_m = twos_complement((out_y_m_h << 8) | out_y_m_l, 16) / 1e3
+print("OUT_Y_M:", out_y_m, "gauss")
+out_z_m_l = bus.read_byte_data(0x1E, 0x2C)
+out_z_m_h = bus.read_byte_data(0x1E, 0x2D)
+out_z_m = twos_complement((out_z_m_h << 8) | out_z_m_l, 16) / 1e3
+print("OUT_Z_M:", out_z_m, "gauss")
+print("") # \r\n
