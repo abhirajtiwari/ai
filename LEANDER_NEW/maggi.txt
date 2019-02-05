@@ -1,0 +1,95 @@
+import smbus
+import time
+import math
+
+bus = smbus.SMBus(1)
+
+def twos_complement(val, bits):
+    if (val & (1 << (bits - 1))) != 0:
+        val = val - (1 << bits)
+    return val
+
+bus.write_byte_data(0x1E, 0x20, 0b01100100)
+bus.write_byte_data(0x1E, 0x21, 0b00000000)
+bus.write_byte_data(0x1E, 0x22, 0b00000000)
+bus.write_byte_data(0x1E, 0x23, 0b00001100)
+
+max_x,min_x=0.000000
+max_y,min_y=0.000000
+max_z,min_z=0.000000
+
+while(True):
+
+	out_x_m_l = bus.read_byte_data(0x1E, 0x28)
+	out_x_m_h = bus.read_byte_data(0x1E, 0x29)
+	x = twos_complement((out_x_m_h << 8) | out_x_m_l, 16) / 1e3
+	#print("X=", x, "gauss")
+
+
+
+	out_y_m_l = bus.read_byte_data(0x1E, 0x2A)
+	out_y_m_h = bus.read_byte_data(0x1E, 0x2B)
+	y= twos_complement((out_y_m_h << 8) | out_y_m_l, 16) / 1e3
+	#print("Y=", y, "gauss")
+
+
+	out_z_m_l = bus.read_byte_data(0x1E, 0x2C)
+	out_z_m_h = bus.read_byte_data(0x1E, 0x2D)
+	z = twos_complement((out_z_m_h << 8) | out_z_m_l, 16) / 1e3
+	#print("Z=",z, "gauss")
+
+	print("")
+	
+	if x < min_x:
+		min_x=x
+	if x > max_x:
+		max_x=x
+	if y < min_y:
+		min_y=y
+	if y > max_y:
+		max_y=y
+	if z < min_z:
+		min_z=z
+	if z > max_z:
+		max_z=z
+
+	#********************************************************************************************************************
+	#HARD IRON DISTORTION
+
+	offset_x = (max_x + min_x) / 2
+	offset_y = (max_y + min_y) / 2
+	offset_z = (max_z + min_z) / 2
+
+	corrected_x =  x - offset_x
+	corrected_y =  y - offset_y
+	corrected_z =  z - offset_z
+
+	print("X=", corrected_x, "gauss")
+	print("Y=", corrected_y, "gauss")
+	print("Z=", corrected_z, "gauss")
+
+	print("HEADING1:", math.atan(corrected_y/corrected_x))
+
+        #*******************************************************************************************************************
+	#SOFT IRON DISTORTION
+       	
+	avg_delta_x = (max_x - min_x) / 2
+	avg_delta_y = (max_y - min_y) / 2
+	avg_delta_z = (max_z - min_z) / 2
+
+	avg_delta = (avg_delta_x + avg_delta_y + avg_delta_z) / 3
+
+	scale_x = avg_delta / avg_delta_x
+	scale_y = avg_delta / avg_delta_y
+	scale_z = avg_delta / avg_delta_z
+
+	corrected_x1 = (x - offset_x) * scale_x
+	corrected_y1 = (y - offset_y) * scale_y
+	corrected_z1 = (z - offset_z) * scale_z
+
+	print("X=", corrected_x1, "gauss")
+	print("Y=", corrected_y1, "gauss")
+	print("Z=", corrected_z1, "gauss")
+
+	print("HEADING2:", math.atan(corrected_y1/corrected_x1))
+
