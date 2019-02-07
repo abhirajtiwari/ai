@@ -57,7 +57,7 @@ while True:
     cv2.imshow('sobel', sobel_horizontal)
     #cv2.imshow('canny', canny)
     #cv2.imshow('lap', lap)
-    #cv2.imshow('mask1', mask)
+    cv2.imshow('mask1', mask)
 
     cv2.imshow("thresh1",thresh1)
     #cv2.imshow("thresh2",thresh2)
