@@ -27,7 +27,7 @@ static PyObject* ext_Prime(PyObject *self,PyObject *args)
 	if(!PyArg_ParseTuple(args,"i",&n)) return NULL;
 	return Py_BuildValue("i",Prime(n));
 	}
-static pyMethodDef extMethods[]={
+static PyMethodDef extMethods[]={
 				{"ext_Prime",(PyCFunction)ext_Prime,METH_VARARGS},
 				{NULL,NULL,0,NULL}
 				};
