@@ -8,3 +8,4 @@ for new_data in gps_socket:
         data_stream.unpack(new_data)
         print('Altitude = ', data_stream.TPV['alt'])
         print('Latitude = ', data_stream.TPV['lat'])
+        print('Longitude = ', data_stream.TPV['lon'])
