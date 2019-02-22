@@ -152,3 +152,5 @@ for newdata in gpsdsock:
 
         Bearing(lat1, lon1, lat2, lon2)
         print(lat1,lon1)
+
+############assuming that when facing north the magnetometer gives 0.00000
