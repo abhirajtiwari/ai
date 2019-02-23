@@ -6,10 +6,10 @@ import numpy as np
 
 add=0x1e
 
-lat2 = 13.347906667
-lon2 = 74.792238333
-#lat1=0.000000
-#lon1=0.000000
+lat2 = 13.3475583
+lon2 = 74.792135
+lat1=0.000000
+lon1=0.000000
 #distance = 0.000000
 degree = 0.000000
 
@@ -62,10 +62,10 @@ def Bearing(lat1,lon1,lat2,lon2):
     #print('rad',rad)
     #print('c',c)
     distance = rad * c
-    return distance
+    return distance, degree
 
 for new_data in gpsdsock:
-    #time.sleep(1)
+    time.sleep(0.1)
 
     msbx=i2c.read_byte_data(add,0x29)
     lsbx=i2c.read_byte_data(add,0x28)
@@ -81,7 +81,7 @@ for new_data in gpsdsock:
     x=x-0.06
     y=y-0.35
     heading=m.atan2(y,x)*180/np.pi
-    heading = heading - 73.00
+    heading = heading - 89.00
     if heading<0:
         heading += 360
 
@@ -99,13 +99,14 @@ for new_data in gpsdsock:
         continue
 
 
-
-    dist = Bearing(lat1, lon1, lat2, lon2)
+    #print('lat',lat1)
+    #print('lon1',lon1)
+    dist, deg = Bearing(lat1, lon1, lat2, lon2)
     print('heading',heading)
 
 ###########degree is angle of the given gps coordinate from the north
 ###########heading is the orientation of the imu from north
-    turn = heading - degree
+    turn = heading - deg
     '''
     if abs(degree - heading)>20 and abs(heading - degree)>180:
         print('clockwise turn',heading - degree)
@@ -120,7 +121,7 @@ for new_data in gpsdsock:
     '''
 
     print('distance', dist)
-    if(turn<8 and turn>-8):
+    if(turn<10 and turn>-10):
         print('straight')
         print(turn)
     elif((turn)<0 and (turn)<=-180):
@@ -136,7 +137,7 @@ for new_data in gpsdsock:
         print('anti-clock2', turn)
         print(turn)
 
-    if dist<4:
+    if dist<7:
         print('destination reached')
         quit()
 
