@@ -47,7 +47,7 @@ while 1:
          t2=time.time()
       	 tax1=t2-t1
 	 i=0
-         	if tax3>0.005:
+         	if tax1>0.005:
                    i=1
 		   break
                   
