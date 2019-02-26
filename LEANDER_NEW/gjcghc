@@ -1,0 +1,29 @@
+
+#include<SoftwareSerial.h>
+#include<stdlib.h>
+
+SoftwareSerial mySerial(10,11); 
+
+void setup(){
+Serial.begin(9600);
+mySerial.begin(9600);
+}
+
+
+void loop()
+{
+  
+while (Serial.available()>0) 
+  Serial.read();
+  
+if (Serial.available()>0) {
+  Serial.read();
+  if (Serial.read()==1) { 
+    Serial.println("FOUND\n");
+  }
+  while (Serial.available()>0) 
+  Serial.read();
+}     
+
+
+}
