@@ -1,0 +1,22 @@
+
+#include <stdlib.h>
+
+void setup()
+{
+Serial.begin(9600);
+
+}
+
+
+void loop()
+{
+
+if (Serial.available()>0)
+{
+int i= Serial.read();
+Serial.print("YES\n");
+Serial.println(i);
+}
+
+
+}
