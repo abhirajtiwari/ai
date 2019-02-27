@@ -1,0 +1,23 @@
+import cv2
+import serial
+import numpy as np
+import time
+im = cv2.imread(r'/home/nemaye/test_codes/result.png',0)
+#print type(im)
+#print(im)
+a = np.array(im)
+a = a.flatten()
+print(a)
+'''
+ser = serial.Serial('/dev/serial0', 115200)
+while (1):
+    ser.write('10')
+    time.sleep(1)
+
+'''
+#print(a[0])
+print(a.shape)
+for i in a:
+    #print(str(i))
+    ser.write(str(i))
+    #time.sleep(1)
