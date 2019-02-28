@@ -1,4 +1,4 @@
-import cv2
+import cv
 import numpy as np
 import serial
 import base64
@@ -15,9 +15,9 @@ ser = serial.Serial(
 
 
 
-cap = cv2.VideoCapture(0)
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5, 5))
-kernel1= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3, 3))
+cap = cv.VideoCapture(0)
+kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(5, 5))
+kernel1= cv.getStructuringElement(cv.MORPH_ELLIPSE,(3, 3))
 
 
 
@@ -31,40 +31,40 @@ while(1):
 
     # Convert BGR to HSV
 
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    hsv=cv2.GaussianBlur(hsv,(5,5),0)
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    hsv=cv.GaussianBlur(hsv,(5,5),0)
 
       # define range of yellow color in HSV
     lower_yellow = np.array([29,86,6])
     upper_yellow = np.array([64,255,255])
 
     # Threshold the HSV image to get only blue colors
-    mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+    mask = cv.inRange(hsv, lower_yellow, upper_yellow)
 
-    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel1)
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel1)
+    mask = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel1)
+    mask = cv.morphologyEx(mask, cv.MORPH_CLOSE, kernel1)
 
 
-    mask = cv2.erode(mask,kernel,iterations=2)
-    mask = cv2.dilate(mask,kernel1, iterations=13)
+    mask = cv.erode(mask,kernel,iterations=2)
+    mask = cv.dilate(mask,kernel1, iterations=13)
 
        # Bitwise-AND mask and original image
-    res = cv2.bitwise_and(frame,frame,  mask = mask)
+    res = cv.bitwise_and(frame,frame,  mask = mask)
 
 # BOUNDING RECTANGLE .............................................................................................
 
-    _, conts, hei = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE )
+    _, conts, hei = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
     conts = np.array(conts)
 
     if len(conts) > 0:
 
         for i, contour in enumerate(conts):
-            rect = cv2.minAreaRect(contour)
-            box = cv2.boxPoints(rect)
+            rect = cv.minAreaRect(contour)
+            box = cv.boxPoints(rect)
             box = np.int0(box)
             aratio = (rect[1][0] / rect[1][1])
             if (aratio > 0.9) and (aratio < 1.1):
-                cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
+                cv.drawContours(frame, [box], 0, (0, 0, 255), 2)
 
 
 
@@ -76,9 +76,9 @@ while(1):
 
 
 
-    gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
+    gray = cv.cvtColor(res, cv.COLOR_BGR2GRAY)
 
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 200, param1=255, param2=20, minRadius=0, maxRadius=0)
+    circles = cv.HoughCircles(gray, cv.HOUGH_GRADIENT, 1, 200, param1=255, param2=20, minRadius=0, maxRadius=0)
     #     # print circles
 
     # ensure at least some circles were found
@@ -91,8 +91,8 @@ while(1):
             # corresponding to the center of the circle
 
             if (aratio > 0.9) and (aratio < 1.1):
-                cv2.circle(res, (x, y), r, (0, 255, 0), 4)
-                roi=cv2.rectangle(res, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), 0)
+                cv.circle(res, (x, y), r, (0, 255, 0), 4)
+                roi=cv.rectangle(res, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), 0)
                 #cv2.putText(frame,"BALL DETECTED",(x,y),cv2.FONT_HERSHEY_SIMPLEX,2,255)
                 image = roi
                 image_read = image.read()
@@ -107,13 +107,13 @@ while(1):
 
 
 
-    cv2.imshow('frame',frame)
-    cv2.imshow('mask',mask)
-    cv2.imshow('res',res)
-    cv2.imshow('roi',roi)
+    cv.imshow('frame',frame)
+    cv.imshow('mask',mask)
+    cv.imshow('res',res)
+    cv.imshow('roi',roi)
 
 #.....................................................................................................................
-    k = cv2.waitKey(5) & 0xFF
+    k = cv.waitKey(5) & 0xFF
     if k == 27:
         break
 
