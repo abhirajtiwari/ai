@@ -110,6 +110,7 @@ while(1):
     cv2.imshow('frame',frame)
     cv2.imshow('mask',mask)
     cv2.imshow('res',res)
+    cv2.imshow('roi',roi)
 
 #.....................................................................................................................
     k = cv2.waitKey(5) & 0xFF
