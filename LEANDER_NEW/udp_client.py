@@ -57,7 +57,7 @@ class ImageGrabber(Thread):
                 self.lock.release()
 
 if __name__ == '__main__':
-    image = ImageGrabber('192.168.0.103', 1080)
+    image = ImageGrabber('192.168.43.154', 1080)
     image.daemon = True
     image.start()
     try:
