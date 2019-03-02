@@ -7,3 +7,4 @@ while True:
 	c, a = sock.accept()
 	connections.append(c)
 	print(connections)	
+#use telnet in clients->telnet <server ip> <port>
