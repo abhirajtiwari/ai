@@ -35,22 +35,22 @@ while True:
             # key = cv.waitKey(1)
             # if key == ord('q'):
             #     break
-	    # print "here also"
+            # print "here also"
             c, addr = sock.accept()
-	    # print "here"
+            # print "here"
             # c.send(str(len(data)))
             c.sendall(data)
-	    rec = c.recv(1)
-	    while rec != 'd':
-		continue
+            rec = c.recv(1)
+            while rec != 'd':
+                continue
             # time.sleep(1./fps)
-            # c.close()
+            c.close()
             print 'wrote'
 
         except socket.error:
             pass
         except KeyboardInterrupt:
             break
-c.close()
+# c.close()
 sock.close()
 print 'Socket Closed' 
