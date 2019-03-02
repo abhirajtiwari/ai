@@ -7,7 +7,7 @@ cap = cv.VideoCapture(0)
 # fps = int(cap.get(cv.CAP_PROP_FPS))
 fps = 30
 
-socket.setdefaulttimeout(0.100)
+#socket.setdefaulttimeout(0.100)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # sock.setblocking(0)
 
@@ -20,6 +20,7 @@ sock.bind(('', port))
 
 sock.listen(5)
 
+#c, addr = sock.accept()
 
 while True:
     _, frame = cap.read()
@@ -34,16 +35,22 @@ while True:
             # key = cv.waitKey(1)
             # if key == ord('q'):
             #     break
+	    # print "here also"
             c, addr = sock.accept()
+	    # print "here"
             # c.send(str(len(data)))
             c.sendall(data)
-            time.sleep(1./fps)
-            c.close()
+	    rec = c.recv(1)
+	    while rec != 'd':
+		continue
+            # time.sleep(1./fps)
+            # c.close()
             print 'wrote'
 
         except socket.error:
             pass
         except KeyboardInterrupt:
             break
+c.close()
 sock.close()
-print 'Socket Closed'
+print 'Socket Closed' 
