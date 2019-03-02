@@ -4,7 +4,8 @@ import numpy as np
 import socket
 
 cap = cv.VideoCapture(0)
-fps = int(cap.get(cv.CAP_PROP_FPS))
+# fps = int(cap.get(cv.CAP_PROP_FPS))
+fps = 30
 
 socket.setdefaulttimeout(0.100)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,6 +14,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname()
 
 port = 1234
+factor = 2
 
 sock.bind(('', port))
 
@@ -21,11 +23,10 @@ sock.listen(5)
 
 while True:
     _, frame = cap.read()
+    b, l, ch = frame.shape 
+    frame = cv.resize(frame, (int(l/factor), int(b/factor)))
     if frame is not None:
         try:
-            frame[frame==255] = 254
-            frame[0,0,0] = 255
-            # print frame.flatten()
             data =frame.flatten('F').tostring()
             # data = np.fromstring(data, dtype='uint8')
             # data = np.reshape(data, (480, 640, 3))
