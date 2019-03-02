@@ -4,8 +4,7 @@ import numpy as np
 import socket
 
 cap = cv.VideoCapture(0)
-# fps = cap.get(cv.CAP_PROP_FPS)
-# print fps
+fps = int(cap.get(cv.CAP_PROP_FPS))
 
 socket.setdefaulttimeout(0.100)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,17 +30,19 @@ while True:
             # data = np.fromstring(data, dtype='uint8')
             # data = np.reshape(data, (480, 640, 3))
             # cv.imshow('frame', frame)
-            key = cv.waitKey(1)
-            if key == ord('q'):
-                break
+            # key = cv.waitKey(1)
+            # if key == ord('q'):
+            #     break
             c, addr = sock.accept()
             # c.send(str(len(data)))
             c.sendall(data)
-            time.sleep(0.033)
+            time.sleep(1./fps)
             c.close()
             print 'wrote'
 
         except socket.error:
             pass
+        except KeyboardInterrupt:
+            break
 sock.close()
 print 'Socket Closed'
