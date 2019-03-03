@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
 import time
-import client
+import client_encoded
 
 # cap = cv2.VideoCapture(0)
 count = 19 #photo count for testing
@@ -13,7 +13,7 @@ while True:
         break
     
     # _, frame = cap.read()
-    frame = client.getCameraFrame() ###get frame from tcp
+    frame = client_encoded.getCameraFrame() ###get frame from tcp
     # time.sleep(3)
     # count += 1
     # frame = cv2.imread('/home/abhiraj/Mars Rover Manipal/dataset/day2/ball/{}.jpg'.format(count))
