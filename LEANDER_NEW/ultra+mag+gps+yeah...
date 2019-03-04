@@ -8,20 +8,28 @@ import time
 
 #****************************************************************************************************************
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-trigPin1 = 16
-echoPin1 = 18
+#left forward
 
-trigPin2 = 12
-echoPin2 = 22
+trigPin1 = 27
+echoPin1 = 17
 
-trigPin3 = 0
-echoPin3 = 0
+# right forward
 
-trigPin4 = 0
-echoPin4 = 0
+trigPin2 = 14
+echoPin2 = 15
+
+#left back
+
+trigPin3 = 26
+echoPin3 = 19
+
+#right back
+
+trigPin4 = 20
+echoPin4 = 21
 
 threshold = 17
 
@@ -50,6 +58,7 @@ tax2 = 0.000000
 tax3 = 0.000000
 tax4 = 0.000000
 
+flag=0
 
 #***************************************************************************************************************
 
@@ -134,12 +143,33 @@ def ultrasonic():
 
         if (i + j) == 3:
             print("FORWARD")
+            flag=1
             return 1
 
         duration2 = t4 - t3
 
         distance2 = duration2 * 17000
+        
+        if (distance1 > threshold) and (distance2 > threshold):
+            print("FORWARD")
+            flag=1
+            return 1
 
+        elif (distance1 < threshold) and (distance2 < threshold):
+            print("BACKWARD")
+            flag=0
+            return -1
+            
+        elif (distance2 < threshold) and (distance2 < distance1):
+            print("LEFT")
+            flag=0
+            return -1
+            
+        elif (distance1 < threshold) and (distance1 < distance2):
+            print("RIGHT")
+            flag=0
+            return -1
+        
         #SIDE ULTRASONICS..........................................................................................
 
         GPIO.output(trigPin3, True)
@@ -167,6 +197,7 @@ def ultrasonic():
 
         if get==1 or distance3<17:
             print("FORWARD")
+            flag=1
             return 1
         ##......................................................................................................
 
@@ -195,6 +226,7 @@ def ultrasonic():
 
         if put==1 or distance4 < 17:
             print("FORWARD")
+            flag=1
             return 1
 
 
@@ -202,19 +234,7 @@ def ultrasonic():
 
 
 
-        if (distance1 > threshold) and (distance2 > threshold):
-            print("FORWARD")
-            return 1
-
-        elif (distance1 < threshold) and (distance2 < threshold):
-            print("BACKWARD")
-            return -1
-        elif (distance2 < threshold) and (distance2 < distance1):
-            print("LEFT")
-            return -1
-        elif (distance1 < threshold) and (distance1 < distance2):
-            print("RIGHT")
-            return -1
+       
 
         GPIO.cleanup()
 
