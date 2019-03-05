@@ -71,7 +71,7 @@ max_y=0
 min_z=0
 max_z=0
 
-l=293
+l=30
 t=0.0000
 
 bus = smbus.SMBus(1)
