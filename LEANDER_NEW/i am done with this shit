@@ -317,7 +317,7 @@ def roverheading(min_x,max_x,min_y,max_y,min_z,max_z):
 
 #....................................................................................................................
 
-def displaydata(t,dist):
+def displaydata(t):
 
 
     if t<10 and t>-10:
@@ -340,7 +340,7 @@ def displaydata(t,dist):
         str="ANTICLOCKWISE"
         angle=t
 
-        print(str,angle)
+    print(str,angle)
 
 
 
