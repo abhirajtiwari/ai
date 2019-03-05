@@ -3,28 +3,24 @@ import numpy
 import time
 import cv2
 
-UDP_IP = "10.57.0.78"
+UDP_IP = "192.168.43.61"
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sock.bind ((UDP_IP, UDP_PORT))
 
-s=""
 
 while True:
 
-    data, addr = sock.recvfrom(46080)
-
-    s += data
-    print('s',len(s))
-    if len(s) == (46080*20):
-
-        frame = numpy.fromstring (s,dtype=numpy.uint8)
-        print(frame.shape)
-        frame = frame.reshape (480,640,3)
-        cv2.imshow('frame',frame)
-
-        s=""
+    data, addr = sock.recvfrom(10000000)
+    print('inside')
+    frame = numpy.fromstring (data,dtype=numpy.uint8)
+    #print('frame shape',frame.shape)
+    #print('frame is',len(frame))
+    frame = numpy.transpose(frame)
+    frame = cv2.imdecode(frame, 1)
+    print('frame shape new',frame.shape)
+    cv2.imshow('frame1',frame)
 
     if cv2.waitKey(1) & 0xFF == ord ('q'):
         break
