@@ -58,7 +58,6 @@ tax2 = 0.000000
 tax3 = 0.000000
 tax4 = 0.000000
 
-flag=0
 
 #***************************************************************************************************************
 
@@ -93,9 +92,8 @@ lon2 = 74.792238333
 lat1 = 0.0000000
 lon1 = 0.0000000
 
-
+#.....................................................................................................................
 def ultrasonic():
-
     while 1:
 
         time.sleep(0.1)
@@ -121,7 +119,7 @@ def ultrasonic():
         duration1 = t2 - t1
 
         distance1 = duration1 * 17000
-
+        # .............................................
         GPIO.output(trigPin2, True)
         time.sleep(0.00001)
         GPIO.output(trigPin2, False)
@@ -143,34 +141,27 @@ def ultrasonic():
 
         if (i + j) == 3:
             print("FORWARD")
-            flag=1
-            return 1
 
         duration2 = t4 - t3
 
         distance2 = duration2 * 17000
-        
+
         if (distance1 > threshold) and (distance2 > threshold):
             print("FORWARD")
-            flag=1
-            return 1
 
         elif (distance1 < threshold) and (distance2 < threshold):
             print("BACKWARD")
-            flag=0
             return -1
-            
+
         elif (distance2 < threshold) and (distance2 < distance1):
             print("LEFT")
-            flag=0
             return -1
-            
+
         elif (distance1 < threshold) and (distance1 < distance2):
             print("RIGHT")
-            flag=0
             return -1
-        
-        #SIDE ULTRASONICS..........................................................................................
+
+        # SIDE ULTRASONICS..........................................................................................
 
         GPIO.output(trigPin3, True)
         time.sleep(0.00001)
@@ -191,13 +182,16 @@ def ultrasonic():
 
         t6 = time.time()
 
+        if get == 1:
+            print("FORWARD--")
+            return 1
+
         duration3 = t6 - t5
 
         distance3 = duration3 * 17000
 
-        if get==1 or distance3<17:
-            print("FORWARD")
-            flag=1
+        if distance3 < threshold:
+            print("FORWARD---")
             return 1
         ##......................................................................................................
 
@@ -220,26 +214,22 @@ def ultrasonic():
 
         t8 = time.time()
 
+        if put == 2:
+            print("FORWARD--")
+            return 1
+
         duration4 = t8 - t7
 
         distance4 = duration4 * 17000
 
-        if put==1 or distance4 < 17:
-            print("FORWARD")
-            flag=1
+        if distance4 < threshold:
+            print("FORWARD---")
             return 1
 
-
-     #..............................................................................................................
-
-
-
-       
+        # ..............................................................................................................
 
         GPIO.cleanup()
-
-
-
+#......................................................................................................................
 
 def haversine(lat1, lon1, lat2, lon2):
     # distance between latitudes
@@ -265,7 +255,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
     print("DISTANCE=", dist)
 
-
+#......................................................................................................................
 def bearing(lat1, lon1, lat2, lon2):
     dLon = lon2 - lon1
     y = math.sin(dLon) * math.cos(lat2)
@@ -325,6 +315,7 @@ def roverheading(min_x,max_x,min_y,max_y,min_z,max_z):
     heading = (heading+l)% 360
     return heading
 
+#....................................................................................................................
 
 def displaydata(t):
 
