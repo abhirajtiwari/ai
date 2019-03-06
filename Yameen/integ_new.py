@@ -100,7 +100,7 @@ def Bearing(lat1,lon1,lat2,lon2):
 
     if degree < 0:
         degree += 360
-    print('degree',degree)
+    #print('degree',degree)
 
     # apply formulae
     a = (pow(m.sin(dLat / 2), 2) + pow(m.sin(dLon / 2), 2) * m.cos(lat1) * m.cos(lat2))
@@ -139,7 +139,7 @@ for new_data in gpsdsock:
         data.unpack(new_data)
         lat1 = data.TPV['lat']
         lon1 = data.TPV['lon']
-        print('inside if')
+        #print('inside if')
 
     if (lat1 == 'n/a'):
         continue
@@ -147,7 +147,7 @@ for new_data in gpsdsock:
         continue
 
     dist, deg = Bearing(lat1, lon1, lat2, lon2)
-    print('heading',heading)
+    #print('heading',heading)
 
 ###########degree is angle of the given gps coordinate from the north
 ###########heading is the orientation of the imu from north
@@ -158,6 +158,7 @@ for new_data in gpsdsock:
     dist_sl, alert_l = Ultrasonic(echo_side_l,trigger_side_l)
     dist_sr, alert_r = Ultrasonic(echo_side_r,trigger_side_r)
     
+    print(alert_l,alert_lf,alert_rf,alert_r)
     if (alert_lf == 'alert' and alert_rf == 'not alert'):
         print('Turn Right')
         continue
@@ -167,7 +168,7 @@ for new_data in gpsdsock:
     elif(alert_lf == 'alert' and alert_rf == 'alert'):
         print('back')
         continue
-    
+
     if (alert_r == 'alert' and alert_l == 'not alert'):
         if((turn)<0 and (turn)<=-180):
             print('anti-clock1', 360 + turn)
@@ -195,7 +196,6 @@ for new_data in gpsdsock:
             print('go straight')
     else:
         print('straight')
-    
     print('distance', dist)
 
 
