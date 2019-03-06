@@ -164,8 +164,9 @@ for new_data in gpsdsock:
     elif (alert_rf == 'alert' and alert_lf == 'not alert'):
         print('Turn Left')
         continue
-    elif(alert_lf == 'not alert' and alert_rf == 'not alert')
-        print('straight')
+    elif(alert_lf == 'alert' and alert_rf == 'alert'):
+        print('back')
+        continue
     
     if (alert_r == 'alert' and alert_l == 'not alert'):
         if((turn)<0 and (turn)<=-180):
@@ -180,7 +181,20 @@ for new_data in gpsdsock:
         elif((turn)>0 and (turn)>=180):
             print('clock2', 360 - turn)
         else:
-            print('go straight')    
+            print('go straight')
+    elif (alert_r == 'not alert' and alert_l == 'not alert'):
+        if((turn)<0 and (turn)<=-180):
+            print('anti-clock1', 360 + turn)
+        elif((turn)>0 and (turn)<180):
+            print('anti-clock2', turn)
+        elif((turn)<0 and (turn)>-180):
+            print('clock1', -turn)
+        elif((turn)>0 and (turn)>=180):
+            print('clock2', 360 - turn)
+        else:
+            print('go straight')
+    else:
+        print('straight')
     
     print('distance', dist)
 
