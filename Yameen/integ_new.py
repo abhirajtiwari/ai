@@ -7,8 +7,8 @@ import RPi.GPIO as GPIO
 
 add=0x1e
 
-lat2 = 13.3475583
-lon2 = 74.792135
+lat2 = 13.347801667
+lon2 = 74.792215
 lat1=0.000000
 lon1=0.000000
 #distance = 0.000000
@@ -164,8 +164,8 @@ for new_data in gpsdsock:
     elif (alert_rf == 'alert' and alert_lf == 'not alert'):
         print('Turn Left')
         continue
-    else:
-        print('back')
+    elif(alert_lf == 'not alert' and alert_rf == 'not alert')
+        print('straight')
     
     if (alert_r == 'alert' and alert_l == 'not alert'):
         if((turn)<0 and (turn)<=-180):
