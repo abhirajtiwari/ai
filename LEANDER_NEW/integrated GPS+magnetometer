@@ -160,4 +160,4 @@ for new_data in gps_socket:
             a = np.round(bearing(lat1, lon1, lat2, lon2))
             b = np.round(roverheading(min_x, max_x, min_y, max_y, min_z, min_z))
             t = b - a
-         displaydata(t)
+        displaydata(t)
