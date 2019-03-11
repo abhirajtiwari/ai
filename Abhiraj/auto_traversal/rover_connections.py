@@ -20,7 +20,7 @@ lpwm.start(0)
 rpwm.start(0)
 
 ###ULTRASONICS###
-side_thresh = 20
+side_thresh = 30
 front_thresh = 30
 
 triggerrf = 14

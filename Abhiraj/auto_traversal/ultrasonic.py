@@ -38,8 +38,8 @@ def getDistance(pinEcho, pinTrigger):
 
 if __name__ == '__main__':
     gpio.setmode(gpio.BCM)
-    trig = 20
-    echo = 21
+    trig = 26
+    echo = 19
 
     gpio.setup(echo, gpio.IN)
     gpio.setup(trig, gpio.OUT)

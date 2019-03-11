@@ -1,6 +1,8 @@
 import RPi.GPIO as gpio
+import time
 import ultrasonic
 from rover_connections import *
+import justimu
 
 # motorl = 9 
 # motorlp = 11
@@ -66,6 +68,23 @@ def left0(speed):
     lpwm.ChangeDutyCycle(speed)
     rpwm.ChangeDutyCycle(speed)
 
+def right90(speed):
+    curr_head = justimu.getHead()
+    final_head = (curr_head + 90)%360
+    while abs(final_head - curr_head) >= 10:
+        right0(speed)
+        curr_head = justimu.getHead()
+    forward(speed)
+    time.sleep(1)
+
+def left90(speed):
+    curr_head = justimu.getHead()
+    final_head = (curr_head + 270)%360
+    while abs(final_head - curr_head) >= 10:
+        left0(speed)
+        curr_head = justimu.getHead()
+    forward(speed)
+    time.sleep(1)
 
 def uturn(speed):
     print 'uturn'
