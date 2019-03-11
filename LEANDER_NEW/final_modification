@@ -167,7 +167,7 @@ def ultrasonic():
 
         time.sleep(0.1)
         GPIO.output(trigPin1, True)
-        time.sleep(0.00001)
+        time.sleep(10e-6)
         GPIO.output(trigPin1, False)
 
         while GPIO.input(echoPin1) == 0:
@@ -179,7 +179,7 @@ def ultrasonic():
             t2 = time.time()
             tax1 = t2 - t1
             i = 0
-            if tax1 > 0.005:
+            if tax1 > 0.005:   #TIMEOUT AT 85cm
                 i = 1
                 break
 
@@ -190,7 +190,7 @@ def ultrasonic():
         distance1 = duration1 * 17000
         # .............................................
         GPIO.output(trigPin2, True)
-        time.sleep(0.00001)
+        time.sleep(10e-6)
         GPIO.output(trigPin2, False)
 
         while GPIO.input(echoPin2) == 0:
@@ -245,7 +245,7 @@ def ultrasonic():
         # SIDE ULTRASONICS..........................................................................................
 
         GPIO.output(trigPin3, True)
-        time.sleep(0.00001)
+        time.sleep(10e-6)
         GPIO.output(trigPin3, False)
 
         while GPIO.input(echoPin3) == 0:
@@ -281,7 +281,7 @@ def ultrasonic():
         ##......................................................................................................
 
         GPIO.output(trigPin4, True)
-        time.sleep(0.00001)
+        time.sleep(10e-6)
         GPIO.output(trigPin4, False)
 
         while GPIO.input(echoPin4) == 0:
