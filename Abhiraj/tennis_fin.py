@@ -1,16 +1,15 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-import subprocess
 import time
 
 detected= False
 started = False
-votes_thresh = 10
+votes_thresh = 3
 # frame_changed = False
 
 cap = cv2.VideoCapture(0)
-count = 1 #photo count for testing
+# count = 217 #photo count for testing
 
 while True and detected == False:
     key = cv2.waitKey(1)
@@ -20,7 +19,7 @@ while True and detected == False:
     _, un_frame = cap.read()
     # time.sleep(3)
     # count += 1
-    # un_frame = cv2.imread('/home/abhiraj/Mars Rover Manipal/dataset/day2/ball/{}.jpg'.format(count))
+    # un_frame = cv2.imread('/home/abhiraj/Mars Rover Manipal/dataset/Day 1/Final Ball day1/{}.jpg'.format(count))
     # frame = cv2.GaussianBlur(un_frame, (5,5), 0)
     frame = np.copy(un_frame)
 
@@ -34,6 +33,28 @@ while True and detected == False:
 
     _, conts, hei = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     conts = np.array(conts)
+
+###################################
+    if started == False:
+        started = True
+        time_start = time.time()
+        voter = np.zeros((32, 24)) ###inc thresh
+    time_elapsed = time.time() - time_start
+
+    if np.amax(voter) >= votes_thresh and started == True:
+        started = False
+        indices = np.where(voter == np.amax(voter))
+        # print indices
+        final_frame = cv2.circle(un_frame, (indices[0]*20, indices[1]*20) , 3, (255,0,0), 3) 
+        detected = True
+        print 'final ball detected'
+        break
+
+    if time_elapsed > 1:
+        print 'voter reset'
+        started = False
+##################################
+
     if len(conts) > 0:
         for i, contour in enumerate(conts):
             (x,y), rad = cv2.minEnclosingCircle(contour)
@@ -51,11 +72,11 @@ while True and detected == False:
             y1 = 0 if y1<0 else y1
             # frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
             # r = un_frame[y1:y2, x1:x2] #r is roi
-            exp_r = un_frame[y1:y2, x1:x2, 1] 
+            r = un_frame[y1:y2, x1:x2, 1] 
             # cv2.imshow("r", exp_r)
             # r = cv2.cvtColor(r, cv2.COLOR_BGR2GRAY)
-            r = exp_r
-            hist = cv2.calcHist(r, [0], None, [256], [0,256]) 
+            # r = exp_r
+            # hist = cv2.calcHist(r, [0], None, [256], [0,256]) 
             # if np.mean(hist[200:,0]) > np.mean(hist[:199,0]):
             #     r = cv2.bitwise_not(r)
             #     print 'inv'
@@ -66,35 +87,43 @@ while True and detected == False:
             r = cv2.medianBlur(r, 3)
             # r = cv2.GaussianBlur(r, (5, 5), 0)
             # r = cv2.adaptiveThreshold(r, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 3, 0) ##ADDED NOW
-            j = cv2.Canny(r, 20, 200)
+            # j = cv2.Canny(r, 20, 200)
             # cv2.imshow('fin', j)
             # plt.plot(hist)
             # plt.pause(0.5)
             # cv2.imshow('r', r)
             circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 2, int(w), param1=20, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
+
             if circles is not None and detected == False:
-                if started == False:
-                    started = True
-                    time_start = time.time()
-                    voter = np.zeros((64, 48))
+                # if started == False:
+                #     started = True
+                #     time_start = time.time()
+                #     voter = np.zeros((64, 48))
                 time_elapsed = time.time() - time_start
-                if started == True and time_elapsed < 5 and np.amax(voter) < votes_thresh:
+
+                if started == True and time_elapsed < 1 and np.amax(voter) < votes_thresh:
                     # time_elapsed = time.time() - time_start
+                    # print circles.shape
                     for circle in circles:
-                        if ((cx-int(x1+circle[0][0]))**2 + (cy-int(y1+circle[0][1]))**2 - circle[0][2]) > 0:
+                        if ((cx-int(x1+circle[0][0]))**2 + (cy-int(y1+circle[0][1]))**2 - circle[0][2]**1.5) > 0: ###EDITED
                             continue
-                        voter[int((x1+circle[0][0])/10), int((y1+circle[0][1])/10)] += 1
-                        print voter
+                        voter[int((x1+circle[0][0])/20), int((y1+circle[0][1])/20)] += 1
+                        print 'voted'
+                        # print voter
                         frame = cv2.circle(frame, (int(x1+circle[0][0]), int(y1+circle[0][1])), circle[0][2], (255,0,0), 3) 
-                if np.amax(voter) >= votes_thresh and started == True:
-                    started = False
-                    indices = np.where(voter == np.amax(voter))
-                    print indices
-                    final_frame = cv2.circle(un_frame, (indices[0]*10, indices[1]*10) , 3, (255,0,0), 3) 
-                    detected = True
-                    print 'final ball detected'
-                if time_elapsed > 5:
-                    started = False
+
+                        time_elapsed = time.time() - time_start
+                        if np.amax(voter) >= votes_thresh and started == True:
+                            started = False
+                            indices = np.where(voter == np.amax(voter))
+                            # print indices
+                            final_frame = cv2.circle(un_frame, (indices[0]*20, indices[1]*20) , 3, (255,0,0), 3) 
+                            detected = True
+                            print 'final ball detected'
+                            break
+                        # if time_elapsed > 2:
+                        #     print 'voter reset'
+                        #     started = False
 
 
     # cv2.imshow('mask', mask)
