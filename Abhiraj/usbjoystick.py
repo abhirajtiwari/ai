@@ -6,6 +6,9 @@ pygame.joystick.init()
 joy = pygame.joystick.Joystick(0)
 joy.init()
 
+x_joy = 0
+y_joy = 0
+
 try:
     while True:
         for event in pygame.event.get():
