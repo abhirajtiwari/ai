@@ -1,46 +1,56 @@
 import cv2
-import cv2.cv as cv
 import numpy as np
 
 cap = cv2.VideoCapture(0)
 kernel = np.ones((3,3),np.float32)
 
+def nothing(x):
+    pass
+
+cv2.namedWindow('HSV')
+
+# create trackbars for color change
+cv2.createTrackbar('H_min','HSV',0,255,nothing)
+cv2.createTrackbar('S_min','HSV',0,255,nothing)
+cv2.createTrackbar('V_min','HSV',0,255,nothing)
+cv2.createTrackbar('H_max','HSV',0,255,nothing)
+cv2.createTrackbar('S_max','HSV',0,255,nothing)
+cv2.createTrackbar('V_max','HSV',0,255,nothing)
+
+def adjust_gamma(image, gamma=1.0):
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+        for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
+
 while True:
     _, frame = cap.read()
     #blurred_frame = cv2.GaussianBlur(frame, (3, 1), 0)
+    gamma = 1.4
+    frame = adjust_gamma(frame, gamma=gamma)
+
+    H_min = cv2.getTrackbarPos('H_min','HSV')
+    S_min = cv2.getTrackbarPos('S_min','HSV')
+    V_min = cv2.getTrackbarPos('V_min','HSV')
+    H_max = cv2.getTrackbarPos('H_max','HSV')
+    S_max = cv2.getTrackbarPos('S_max','HSV')
+    V_max = cv2.getTrackbarPos('V_max','HSV')
+
     bfilter = cv2.bilateralFilter(frame, 5, 90, 90)
     hsv = cv2.cvtColor(bfilter, cv2.COLOR_BGR2HSV)
 
-    lower_blue = np.array([26, 89, 6])
-    upper_blue = np.array([64, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    lower_green = np.array([20, 89, 6])
+    upper_green = np.array([64, 255, 255])
 
-    dilation = cv2.dilate(mask, kernel, iterations=3)
-#    erosion = cv2.erode(dilation, kernel, iterations=1)
+#    lower_green = np.array([H_min,S_min,V_min])
+#    upper_green = np.array([H_max,S_max,V_max])
 
-#HOUGH_CIRCLES
+    mask = cv2.inRange(hsv, lower_green, upper_green)
 
+    dilation = cv2.dilate(mask, kernel, iterations=2)
+    dilation = cv2.erode(dilation, kernel, iterations=5)        #this is erosion
 
-    circles = cv2.HoughCircles(dilation, cv.CV_HOUGH_GRADIENT, 1, 200, param1=255, param2=25, minRadius=0, maxRadius=0)
-    #     # print circles
-
-    # ensure at least some circles were found
-    if circles is not None:
-        # convert the (x, y) coordinates and radius of the circles to integers
-        circles = np.round(circles[0, :]).astype("int")
-
-
-        # loop over the (x, y) coordinates and radius of the circles
-        for (x, y, r) in circles:
-            # draw the circle in the output image, then draw a rectangle in the image
-            # corresponding to the center of the circle
-            cv2.circle(frame, (x, y), r, (0, 255, 0), 3)
-            #cv2.rectangle(frame, (x - 60, y - 60), (x + 60, y + 60), (0, 128, 255), 1)
-            #print('radius',radius)
-            #print('area', area)
-
-#*********************************************************************************************************************
-
+    cv2.imshow('dila',dilation)
 #COUNTERS
     contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     #contours2, _ = cv2.findContours(contours1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -48,17 +58,26 @@ while True:
     if len(contours) != 0:
         for counter in contours:
 # ***********for selecting the maximum area************
-
+            #print('cont',contours)
+            #cv2.imshow('contours',contours)
             update.append(counter)
+            #print('up',update)
             c = max(update, key=cv2.contourArea)
-
+            #print('c',c)
 # *******************************************************
 
             #***********for rotated rectangle*******************
             rect = cv2.minAreaRect(counter)
-            box = cv2.cv.BoxPoints(rect)
+            x_rec, y_rec, w_rec, h_rec = cv2.boundingRect(counter)
+            (x,y),radius = cv2.minEnclosingCircle(counter)
+            center = (int(x),int(y))
+            radius = int(radius)
+            #print('ra',radius)
+            #print('rect',rect)
+            #print('as',rect[1][0])
+            box = cv2.boxPoints(rect)
             box = np.int0(box)
-
+            #print('b',box)
             x1 = box[0, 0]
             y1 = box[0, 1]
             x2 = box[1, 0]
@@ -67,63 +86,38 @@ while True:
             y3 = box[2, 1]
             x4 = box[3, 0]
             y4 = box[3, 1]
-
-            area_rotated_rect = 1 / 2 * abs(x1 * y2 + x2 * y3 + x3 * y4 + x4 * y1 - (x2 * y1 + x3 * y2 + x4 * y3 + x1 * y4))
-#**************************************************************
-
-
-
-#area = cv2.contourArea
-        #hull = cv2.convexHull(counter)
-            x_rec, y_rec, w_rec, h_rec = cv2.boundingRect(c)
-        #ellipse = cv2.fitEllipse(counter)
-
-
-#***********for simple rectangle***************
-            (x, y), radius = cv2.minEnclosingCircle(c)
-            center = (int(x), int(y))
-            radius = int(radius)
-            ratio = w_rec / h_rec
-
-            area_rec = w_rec * h_rec
-
-            #if ratio>=1 and ratio<=1.5
-#*************************************************
-
-
-
-
-            area_ratio = area_rec/(area_rotated_rect+0.0001)
-            area_circle = np.pi*radius*radius
-            print('___________________________________________')
-            print('area_rotated_rec',area_rotated_rect)
-            print('area_rec',area_rec)
-            print('area_ratio',area_ratio)
-            print('ratio',ratio)
-            print('area_circle',area_circle)
-#            print('contour_area',area)
-            print('____________________________________________')
-            #print('box=', box, 'box1',box[0,1])
-
-        #print('x',x,'y',y,'x_rec', x_rec,'y_rec',y_rec,'radius',radius,'width',w_rec,'height',h_rec)
-
-            area_diff = area_rec - area_rotated_rect
-            print(area_diff)
-            #if ratio < 1.2 and ratio > 0.8 and area_rec > 100 and area_rotated_rect > 100 and area_circle > 500 and area_circle < 20000 and area_ratio < 1.7: #and  area_ratio < 1.25 and area_ratio > 0.75:
-            if area_diff < 800 and area_diff > 20 and ratio < 1.2 and ratio > 0.8:
-                #if(area_circle<8000 and area > 5000):
-        #if :#area<2500 and area>50 :
-                cv2.circle(frame, center, radius, (0, 255, 0), 2)
-                #cv2.drawContours(frame, counter, -1, (0, 255, 0), 3)
-                #cv2.ellipse(frame, ellipse, (0, 255, 0), 2)
-                cv2.rectangle(frame, (x_rec, y_rec), (x_rec + w_rec, y_rec + h_rec), (0, 255, 0), 2)
-                cv2.drawContours(frame, [box], -1, (0, 255, 255), 2)
-
+            area_circle = np.pi*(radius+3)*(radius+3)
+            if rect[1][0]>20:
+                if abs(rect[1][0] - rect[1][1])<15:
+                    print('center is',center)
+                    #cv2.rectangle(frame,(x_rec,y_rec),(x_rec+w_rec,y_rec+h_rec),(0,255,0),2)
+                    cv2.circle(frame,center,radius+6,(0,0,0),1)
+                    #print('radius',radius+3)
+                    #cv2.drawContours(frame, [box], -1, (255, 0, 0), 1)
+                    #print('diff',abs(rect[1][0] - rect[1][1]))
+                    #print('x y',x_rec,y_rec,w_rec,h_rec)
+                    y_min = int(y-(radius+6))
+                    x_min = int(x-(radius+6))
+                    y_max = int(y+(radius+6))
+                    x_max = int(x+(radius+6))
+                    if int(y-(radius+6)<0):
+                        y_min= 0
+                    if int(y+(radius+6)<0):
+                        y_max = 0
+                    if int(x-(radius+6)<0):
+                        x_min = 0
+                    if int(x+(radius+6)<0):
+                        x_max = 0
+                    roi = frame[y_min:y_max,x_min:x_max]
+                    if len(roi) is not 0:
+                        cv2.imshow('roi',roi)
+                    roi = []
+                    #im = cv2.drawContours(im,[box],0,(0,0,255),2)
 
 #*************************************************************************************************
-
+    #frame1[:] = [H_max - H_min,S_max - S_min,V_max - V_min]
     cv2.imshow("Frame", frame)
-    cv2.imshow("Mask", dilation)
+    #cv2.imshow("Mask", mask)
 
     key = cv2.waitKey(1)
     if key == 27:

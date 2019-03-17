@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+import cv2.cv as cv	
+
 #import imutils 
 def nothing(x):
     pass
@@ -14,6 +16,12 @@ cv2.createTrackbar("Vmax","para",0,255,nothing)
 
 while(1):
     a,frame=cap.read()
+    """img_yuv=cv2.cvtColor(frame,cv2.COLOR_BGR2YUV)
+    clahe=cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    img_yuv[:,:,0]=clahe.apply(img_yuv[:,:,0])
+    frame=cv2.cvtColor(img_yuv,cv2.COLOR_YUV2BGR)
+    """
+
     rows,cols,chan=frame.shape
     black=np.zeros((rows,cols),np.uint8)
     hmin=cv2.getTrackbarPos("Hmin","para")
@@ -22,15 +30,15 @@ while(1):
     hmax=cv2.getTrackbarPos("Hmax","para")
     smax=cv2.getTrackbarPos("Smax","para")
     vmax=cv2.getTrackbarPos("Vmax","para")
-    hmin=20
-    smin=117
-    vmin=38
-    hmax=100
+    hmin=29
+    smin=86
+    vmin=6
+    hmax=64
     smax=255
     vmax=255
     kernel=np.ones((5,5),np.uint8)
     kernel1=np.ones((3,3),np.uint8)
-    blur=cv2.GaussianBlur(frame,(11,11),0)
+    blur=cv2.GaussianBlur(frame,(5,5),0)
     hsv=cv2.cvtColor(blur,cv2.COLOR_BGR2HSV)
     
     lball=np.array([hmin,smin,vmin])
@@ -38,9 +46,12 @@ while(1):
     mask1=cv2.inRange(hsv,lball,hball)
     
     mask=cv2.inRange(hsv,lball,hball)
+    ma=mask
+    mask = cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)),iterations=1)
+    mask = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)), iterations=13)	
     """mask=cv2.erode(mask,kernel,iterations=2)
     #mask=cv2.dilate(mask,kernel1,iterations=1)
-    """
+    
     mask=cv2.dilate(mask,kernel,iterations=1)
     mask=cv2.erode(mask,kernel,iterations=1)
     
@@ -48,7 +59,7 @@ while(1):
     mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernel)
     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernel1)
     mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernel)
-    
+    """
     prev=0
     curr=0
     
@@ -58,7 +69,8 @@ while(1):
        for i in contours:
            x,y,w,h = cv2.boundingRect(i)
            ratio=float(w)/h
-           if ratio>=1 and ratio<2:
+	   print ratio
+           if ratio>=0.9 and ratio<1.2:
             update.append(i)  
             
                
@@ -71,10 +83,10 @@ while(1):
      xrange=int((x+w)*1.5)
      yrange=int((y+h)*1.5)
      
-     roi=frame[x:x+w,y:y+h]
+     roi=mask[y:y+w,x:x+h]
      #cv2.imshow('roi',roi)
      if len(roi)!=0:
-      roi_hsv=cv2.cvtColor(roi,cv2.COLOR_BGR2HSV)
+      #roi_hsv=cv2.cvtColor(roi,cv2.COLOR_BGR2HSV)
       #roi_thresh=cv2.inRange(roi_hsv,lball,hball)
       #black[x:x+w+5,y:y+h+5]=roi_thresh
       #fr=cv2.bitwise_and(frame,frame,mask=roi)
@@ -85,30 +97,35 @@ while(1):
           m=w
 
       #print(roi)  
-      roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-      circles=cv2.HoughCircles(roi_gray,cv2.HOUGH_GRADIENT,1,200,param1=255,param2=13,minRadius=0,maxRadius=m)
+      #roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
+      circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=128,param2=10,minRadius=int(w/3),maxRadius=int(w/2))
  
       cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
       if circles is not None:
           print("ball")   
           circles=np.round(circles[0,:]).astype("int")
+	  prev=0
           for(xc,yc,rc) in circles:
-              cv2.circle(frame,(xc+x,yc+y),rc,(0,255,0),3)
-              cv2.circle(frame,(xc+x,yc+y),2,(255,0,0),2)
+		curr=rc
+		if curr>prev:
+			maxval=curr
+			xop=xc
+			yop=yc
+		prev=curr
+		 
+	   	    
+          cv2.circle(frame,(xop+x,yop+y),maxval,(0,255,0),4)
+          cv2.circle(frame,(xop+x,yop+y),2,(255,0,0),2)
       else:
           print("no ball")
     
-    roi=cv2.inRange(hsv,lball,hball)
-    blend=cv2.bitwise_and(frame,frame,mask=roi)
+    	 
 
     cv2.imshow('frame',frame)
     cv2.imshow('para',frame)
-    cv2.imshow('res',mask)
+    cv2.imshow('res',ma)
 
     k=cv2.waitKey(2) & 0xFF
     if k==27:
         break
 cv2.destroyAllWindows()    
-
-
-
