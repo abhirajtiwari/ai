@@ -96,6 +96,9 @@ def uturn(speed):
         backward(speed)
     right0(speed)
 
+def stop():
+    lpwm.ChangeDutyCycle(0)
+    rpwm.ChangeDutyCycle(0)
 # def sendJoystick(x, y):
     #send the joystick vals
 

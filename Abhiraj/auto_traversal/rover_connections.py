@@ -1,10 +1,10 @@
 import RPi.GPIO as gpio
 
 ###MOTORS###
-motorl = 9 
-motorlp = 11
+motorl = 5
+motorlp = 13
 motorr = 23
-motorrp = 24
+motorrp = 18
 
 gpio.setmode(gpio.BCM)
 
@@ -23,14 +23,14 @@ rpwm.start(0)
 side_thresh = 30
 front_thresh = 30
 
-triggerrf = 14
-echorf = 15
-triggerlf = 27
-echolf = 17
-triggerrs = 20
-echors = 21
-triggerls = 26
-echols = 19
+triggerrf = 9
+echorf = 11
+triggerlf = 19
+echolf = 26
+triggerrs = 8
+echors = 25
+triggerls = 20
+echols = 16
 
 gpio.setup(echorf, gpio.IN)
 gpio.setup(echolf, gpio.IN)
