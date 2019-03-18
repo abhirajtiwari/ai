@@ -5,7 +5,8 @@ import time
 
 detected= False
 started = False
-votes_thresh = 3
+votes_thresh = 8
+# votes_thresh = 100
 # frame_changed = False
 
 cap = cv2.VideoCapture(0)
@@ -26,10 +27,12 @@ while True and detected == False:
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_green = np.array([29, 60, 20])
     upper_green = np.array([64, 255, 255])
-    
+
     mask = cv2.inRange(frame_HSV, lower_green, upper_green)
     mask = cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)))
     mask = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)), iterations=13)
+
+    cv2.imshow('mask', mask)
 
     _, conts, hei = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     conts = np.array(conts)
@@ -60,6 +63,9 @@ while True and detected == False:
             (x,y), rad = cv2.minEnclosingCircle(contour)
             frame = cv2.circle(frame, (int(x), int(y)), 0, (0,0,255), 4)
             x1, y1, w, h = cv2.boundingRect(contour)
+            # box = cv2.minAreaRect(contour)
+            # if box[1][0]/box[1][1] 
+            # print box
             moments = cv2.moments(contour)
             cx = int(moments['m10']/moments['m00'])
             cy = int(moments['m01']/moments['m00'])
@@ -85,14 +91,20 @@ while True and detected == False:
             # cv2.imshow('roi', r)
             # r = exp_r ##########################
             r = cv2.medianBlur(r, 3)
-            # r = cv2.GaussianBlur(r, (5, 5), 0)
+            # r = cv2.GaussianBlur(r, (5, 5), 1)
             # r = cv2.adaptiveThreshold(r, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 3, 0) ##ADDED NOW
             # j = cv2.Canny(r, 20, 200)
             # cv2.imshow('fin', j)
             # plt.plot(hist)
             # plt.pause(0.5)
             # cv2.imshow('r', r)
-            circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 2, int(w), param1=20, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
+            # circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=128, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
+
+            #Try stronger hough params and stop the servo if a circle is detected, at the same time ensuring frames don't overlap with some buffer
+            circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=128, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
+            stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=100, param2=25, minRadius=int(w/6), maxRadius=int(w/2)) 
+            if stringent_circles is not None and detected == False:
+                print '################ stop rotating ###################'
 
             if circles is not None and detected == False:
                 # if started == False:
