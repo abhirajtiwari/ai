@@ -104,4 +104,3 @@ while 1:
 
 
 GPIO.cleanup()
-
