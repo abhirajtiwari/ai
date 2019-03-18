@@ -2,6 +2,10 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import serial
+
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+stopped = False
 
 detected= False
 started = False
@@ -13,6 +17,8 @@ cap = cv2.VideoCapture(0)
 # count = 217 #photo count for testing
 
 while True and detected == False:
+    if stopped == False:
+        ser.write('r')
     key = cv2.waitKey(1)
     if key == ord('q'):
         break
@@ -104,6 +110,8 @@ while True and detected == False:
             circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=128, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
             stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=100, param2=25, minRadius=int(w/6), maxRadius=int(w/2)) 
             if stringent_circles is not None and detected == False:
+                ser.write('s')
+                stopped = False
                 print '################ stop rotating ###################'
 
             if circles is not None and detected == False:
@@ -143,5 +151,7 @@ while True and detected == False:
 
 cv2.destroyAllWindows()
 cv2.imshow('final_frame', final_frame)
+ser.write('q')
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+ser.close()
