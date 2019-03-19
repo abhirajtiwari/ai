@@ -1,195 +1,246 @@
-import numpy as np
 import cv2
-import cv2.cv as cv	
+import numpy as np
+from math import sqrt
+import time
+import socket
+#import RPi.GPIO as GPIO
+UDP_IP = "192.168.43.61"
+UDP_PORT = 10000
 
-#import imutils 
-def nothing(x):
-    pass
+sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+sock.bind ((UDP_IP, UDP_PORT))
+
+cap = cv2.VideoCapture(0)
+
+kernel = np.ones((3,3),np.float32)
+
 def adjust_gamma(image, gamma=1.0):
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+        for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
 
-   invGamma = 1.0 / gamma
-   table = np.array([((i / 255.0) ** invGamma) * 255
-      for i in np.arange(0, 256)]).astype("uint8")
+def ROI(img,y_lrange,y_urange,x_lrange,x_urange):
+    RoI = img[y_lrange:y_urange,x_lrange:x_urange]
+    return RoI
 
-   return cv2.LUT(image, table)
-def corrected(x,y,w,h):
-	roi_frame=frame[y:y+w,x:x+h]
-	roi_lab=cv2.cvtColor(roi_frame,cv2.COLOR_BGR2LAB)
-    	roi_gamma=adjust_gamma(roi_frame,0.3) #gamma corrected
-    	roi_lab_g=cv2.cvtColor(roi_gamma,cv2.COLOR_BGR2LAB) #lab colorspace
-    	hist_g=cv2.calcHist([roi_lab_g],[0],None,[256],[0,256])
-	pos,b=np.where(hist_g==np.amax(hist_g))
-	val=1.0000
-	arr=np.zeros(256,dtype=np.uint8)
-	"""while pos[0]<108 or pos[0]>148:
-		if pos[0]>128:
-			val-=0.05
-		else:
-			val+=0.05
-		#print val
-		roi_gamma=adjust_gamma(roi_frame,val)
-		roi_lab_g=cv2.cvtColor(roi_gamma,cv2.COLOR_BGR2LAB)	 
-		hist_g=cv2.calcHist([roi_lab_g],[0],None,[256],[0,256])
-		pos,b=np.where(hist_g==np.amax(hist_g))
+prev = 0
+curr_rad = 0
+while True:
+	#data, addr = sock.recvfrom(10000000)
+	#frame = np.fromstring (data,dtype=np.uint8)
+	#frame = np.transpose(frame)
+	#frame = cv2.imdecode(frame, 1)
+	ret, frame = cap.read()
+	frame_x, frame_y, _ = frame.shape
+	#if frame_x != 0 and frame_y != 0:
+	if ret == True:
+		gamma = 1
+		frame = adjust_gamma(frame, gamma=gamma)
+		#frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+		bfilter = cv2.bilateralFilter(frame, 5, 90, 90)
+		hsv = cv2.cvtColor(bfilter, cv2.COLOR_BGR2HSV)
 
-		arr[pos[0]]+=1
-		if arr[pos[0]]>7:
-			break"""
-	print "POSITION",pos
-	roi_hsv=cv2.cvtColor(roi_gamma,cv2.COLOR_BGR2HSV)
-	mask_roi=cv2.inRange(roi_hsv,lball,hball)
-    	
-    	mask_roi = cv2.erode(mask_roi, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)),iterations=1)
-    	mask_roi = cv2.dilate(mask_roi, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)), iterations=13)	
-	return mask_roi
-	
-	 
-	
-cap=cv2.VideoCapture(0)
-cv2.namedWindow("para")
-cv2.createTrackbar("Hmin","para",0,255,nothing)
-cv2.createTrackbar("Smin","para",0,255,nothing)
-cv2.createTrackbar("Vmin","para",0,255,nothing)
-cv2.createTrackbar("Hmax","para",0,255,nothing)
-cv2.createTrackbar("Smax","para",0,255,nothing)
-cv2.createTrackbar("Vmax","para",0,255,nothing)
+		lower_green = np.array([20, 64, 6])
+		upper_green = np.array([64, 255, 255])
 
-while(1):
-    a,frame=cap.read()
-    """img_yuv=cv2.cvtColor(frame,cv2.COLOR_BGR2YUV)
-    clahe=cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    img_yuv[:,:,0]=clahe.apply(img_yuv[:,:,0])
-    frame=cv2.cvtColor(img_yuv,cv2.COLOR_YUV2BGR)
-    """
+		lower_green1 = np.array([20, 64, 6])
+		upper_green1 = np.array([64, 255, 255])
 
-    rows,cols,chan=frame.shape
-    black=np.zeros((rows,cols),np.uint8)
-    hmin=cv2.getTrackbarPos("Hmin","para")
-    smin=cv2.getTrackbarPos("Smin","para")
-    vmin=cv2.getTrackbarPos("Vmin","para")
-    hmax=cv2.getTrackbarPos("Hmax","para")
-    smax=cv2.getTrackbarPos("Smax","para")
-    vmax=cv2.getTrackbarPos("Vmax","para")
-    hmin=29
-    smin=86
-    vmin=6
-    hmax=64
-    smax=255
-    vmax=255
-    """kernel=np.ones((5,5),np.uint8)
-    kernel1=np.ones((3,3),np.uint8)"""
-   
-    blur=cv2.GaussianBlur(frame,(5,5),0)
-    
-    hsv=cv2.cvtColor(blur,cv2.COLOR_BGR2HSV)
-    
-    lball=np.array([hmin,smin,vmin])
-    hball=np.array([hmax,smax,vmax])
-    mask1=cv2.inRange(hsv,lball,hball)
-    
-    mask=cv2.inRange(hsv,lball,hball)
-    ma=mask
-    mask = cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)),iterations=1)
-    mask = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)), iterations=13)	
-   
-    """mask=cv2.erode(mask,kernel,iterations=2)
-    #mask=cv2.dilate(mask,kernel1,iterations=1)
-    
-    mask=cv2.dilate(mask,kernel,iterations=1)
-    mask=cv2.erode(mask,kernel,iterations=1)
-    
-    
-    mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernel)
-    mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,kernel1)
-    mask=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernel)
-    """
-    prev=0
-    curr=0
-    
-    contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    update=[] 
-    if len(contours)!=0:
-       for i in contours:
-           x,y,w,h = cv2.boundingRect(i)
-           ratio=float(w)/h
-	   #print ratio
-           if ratio>0.9 and ratio<2:
-            update.append(i)  
-            
-               
-    #roi=frame       
-    if len(update)!=0:
-	for i in update:        
-     #c= max(update, key = cv2.contourArea)
-	     x,y,w,h = cv2.boundingRect(i)
-	     moments=cv2.moments(i)
-	     cx = int(moments['m10']/moments['m00'])
-             cy = int(moments['m01']/moments['m00'])
-	     
-	     xmin=int(x/2)
-	     ymin=int(y/2)
-	     xrange1=int((w)*1.2)
-	     yrange=int((h)*1.2)
-	     
-	     roi_mask=mask[y:y+yrange,x:x+xrange1]
-	     xr=x-(xrange1/2)
-	     if xr<0:
-		xr=0
-	     roi_left=mask[y:y+yrange,xr:x+(xrange1)/2]
-	     roi_right=mask[y:y+yrange,x+(xrange1)/2:x+(xrange1)/2+xrange1]
-	     hist_main = cv2.calcHist([roi_mask],[0],None,[256],[0,256])
-	     hist_left = cv2.calcHist([roi_left],[0],None,[256],[0,256])
-	     hist_right = cv2.calcHist([roi_right],[0],None,[256],[0,256])
-	     #print roi_left
-	     if hist_right[255]>hist_main[255]/1.65 and hist_left[255]>hist_main[255]/1.65:
-		continue
-	     	 
-	     
-	     roi=blur[y:y+yrange,x:x+xrange1]
-	     	
-	     cv2.imshow('maskasas',roi_left)
-	     roi=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-	     #cv2.imshow('roi',roi)
-	     if len(roi)!=0:
-	      if (h>w): 
-		m=h
-	      else :
-		  m=w
+		mask = cv2.inRange(hsv, lower_green, upper_green)
 
-	      #print(roi)  
-	      #roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-	      circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=200,param2=15,minRadius=int(w/3),maxRadius=int(w/2))
-	      cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)  
-	      cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2-xrange1,y+yrange),(0,255,0),2)
-	      cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2+xrange1,y+yrange),(0,255,0),2)
-	     
-	      if circles is not None:
-		     
-		  circles=np.round(circles[0,:]).astype("int")
-		  prev=0
-		  for(xc,yc,rc) in circles:
-			curr=rc
-			if curr>prev:
-				maxval=curr
-				xop=xc
-				yop=yc
-			prev=curr
-				 
-	 	  if abs(cx-(x+xop))>20 or abs(cx-(x+xop))>20:
-			continue
-		  print("ball")
-		  cv2.circle(frame,(xop+x,yop+y),maxval,(0,255,0),4)
-		  cv2.circle(frame,(xop+x,yop+y),2,(255,0,0),2)
-	      else:
-		  print("no ball")
-    
-    	 
+		dilation = cv2.dilate(mask, kernel, iterations=3)
+		dilation = cv2.erode(dilation, kernel, iterations=5)
+		#mask = cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)))
+		#mask = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)),iterations=13)
 
-    cv2.imshow('frame',frame)
-    cv2.imshow('para',frame)
-    cv2.imshow('res',mask)
+        cv2.imshow('mask',dilation)
+    #COUNTERS
+        contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+  
+        update=[]
+        if len(contours) != 0:
+            for counter in contours:
+  
+                update.append(counter)
+  
+                c = max(update, key=cv2.contourArea)
+  
 
-    k=cv2.waitKey(2) & 0xFF
-    if k==27:
-        break
-cv2.destroyAllWindows()    
+                #***********for rotated rectangle*******************
+                #minAreaReact returns center(x,y) width height angle of rotation
+                rect = cv2.minAreaRect(counter)
+                x_rec, y_rec, w_rec, h_rec = cv2.boundingRect(counter)
+                (x,y),radius = cv2.minEnclosingCircle(counter)
+                center = (int(x),int(y))
+                radius = int(radius)
+                if rect[1][1] == 0:
+                	break
+                ratio = float(rect[1][0])/(rect[1][1])
+                #print('rect',rect[1][0])
+
+                if ratio<1.1 and ratio>0.9:
+                    #print('center is',center)
+						                
+					y_min = int(y-(radius))
+					x_min = int(x-(radius))
+					y_max = int(y+(radius))
+					x_max = int(x+(radius))
+					if int(y-(radius)<0):
+						break
+					if int(y+(radius)<0):
+						break
+					if int(x-(radius)<0):
+						break
+					if int(x+(radius)<0):
+						break
+					roi = ROI(frame,y_min,y_max,x_min,x_max)    
+					#print('x_max',x_max-x_min)
+					if len(roi) is not 0:
+						gamma1 = 1
+						#roi = adjust_gamma(roi,gamma=gamma1)
+						y_roi,x_roi,_ = roi.shape
+						#print('s',roi.shape)
+						#print('y,x',y_roi,x_roi)
+						#print('ra',radius)
+						side_length = radius*2
+						side_length = int(side_length)
+						#print('side_le',side_length)
+						length = (side_length/sqrt(2) - radius)/sqrt(2)
+						length = int(length)
+
+						roi_gray = cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
+				
+						circles = cv2.HoughCircles(roi_gray,cv2.HOUGH_GRADIENT,1,20,param1=50,param2=30,minRadius=0,maxRadius=0)
+						if circles is not None:
+							circles = np.round(circles[0,:]).astype("int")
+							for (x_cor,y_cor,radii) in circles:
+	   							curr_rad = radii
+	   							if curr_rad>prev:
+	   								max_rad = curr_rad
+	   								x_cen = x_cor
+	   								y_cen = y_cor
+							prev = curr_rad
+							#print('le',length)
+							#print('length_roi',len(roi))
+							roi_in_circle_tl = roi[y_cor/2 - length: y_cor/2, x_cor/2 - length: x_cor/2]   #inside circle top left roi
+							roi_in_circle_tr = roi[y_cor/2 - length: y_cor/2, x_cor/2: x_cor/2 + length]   #inside circle top right roi
+							roi_in_circle_bl = roi[y_cor/2: y_cor/2 + length, x_cor/2 - length: x_cor/2]   #inside circle bottom left roi
+							roi_in_circle_br = roi[y_cor/2: y_cor/2 + length, x_cor/2: x_cor/2 + length]   #inside circle bottom right roi
+							roi_out_circle_tl = roi[0:length,0:length]
+							roi_out_circle_tr = roi[0:length,side_length - length:side_length]
+							roi_out_circle_bl = roi[side_length - length:side_length,0:length]
+							roi_out_circle_br = roi[side_length - length:side_length,side_length - length:side_length]
+							
+							
+							ar1,ar2,_ = roi.shape
+							if ar1==0 or ar2==0:
+								break
+							
+							ar1,ar2,_ = roi_in_circle_tl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_tr.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_bl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_br.shape
+							if ar1==0 or ar2==0:
+								break
+
+							ar1,ar2,_ = roi_out_circle_tl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_tr.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_bl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_br.shape
+							if ar1==0 or ar2==0:
+								break
+
+							mask_in_tl = cv2.inRange(roi_in_circle_tl, lower_green1, upper_green1)
+							mask_in_tr = cv2.inRange(roi_in_circle_tr, lower_green1, upper_green1) 
+							mask_in_bl = cv2.inRange(roi_in_circle_bl, lower_green1, upper_green1)
+							mask_in_br = cv2.inRange(roi_in_circle_br, lower_green1, upper_green1)
+							mask_out_tl = cv2.inRange(roi_out_circle_tl, lower_green1, upper_green1)
+							mask_out_tr = cv2.inRange(roi_out_circle_tr, lower_green1, upper_green1)
+							mask_out_bl = cv2.inRange(roi_out_circle_bl, lower_green1, upper_green1)
+							mask_out_br = cv2.inRange(roi_out_circle_br, lower_green1, upper_green1)
+							
+							if mask_in_tl.shape != mask_in_tr.shape:
+								break
+							if mask_in_bl.shape != mask_in_br.shape:
+								break
+							if mask_out_tl.shape != mask_out_tr.shape:
+								break
+							if mask_out_bl.shape != mask_out_br.shape:
+								break
+
+							inside_top_mask = cv2.bitwise_or(mask_in_tl,mask_in_tr)
+							inside_bottom_mask = cv2.bitwise_or(mask_in_bl,mask_in_br)
+							
+							if inside_top_mask.shape != inside_bottom_mask.shape:
+								break
+
+							inside_mask = cv2.bitwise_or(inside_top_mask,inside_bottom_mask)
+							outside_top_mask = cv2.bitwise_and(mask_out_tl,mask_out_tr)
+							outside_bottom_mask = cv2.bitwise_and(mask_out_bl,mask_out_br)
+
+							if outside_top_mask.shape != outside_bottom_mask.shape:
+								break
+
+							outside_mask = cv2.bitwise_and(outside_top_mask,outside_bottom_mask)
+							'''
+							cv2.imshow('mask_in_tl',roi_in_circle_tl)
+							cv2.imshow('mask_in_tr',roi_in_circle_tr)
+							cv2.imshow('mask_in_bl',roi_in_circle_bl)
+							cv2.imshow('mask_in_br',roi_in_circle_br)
+							cv2.imshow('mask_out_tl',roi_out_circle_tl)
+							cv2.imshow('mask_out_tr',roi_out_circle_tr)
+							cv2.imshow('mask_out_bl',roi_out_circle_bl)
+							cv2.imshow('mask_out_br',roi_out_circle_br)
+							'''
+							
+							cv2.imshow('mask_in_tl',mask_in_tl)
+							cv2.imshow('mask_in_tr',mask_in_tr)
+							cv2.imshow('mask_in_bl',mask_in_bl)
+							cv2.imshow('mask_in_br',mask_in_br)
+							cv2.imshow('mask_out_tl',mask_out_tl)
+							cv2.imshow('mask_out_tr',mask_out_tr)
+							cv2.imshow('mask_out_bl',mask_out_bl)
+							cv2.imshow('mask_out_br',mask_out_br)
+							
+							cv2.imshow('inside_mask',inside_mask)
+							cv2.imshow('outside_mask',outside_mask)
+							new_mask = cv2.bitwise_xor(inside_mask,outside_mask)
+							
+							cv2.imshow('new_mask',new_mask)
+							number = np.count_nonzero(new_mask)
+							#print('number is',number)
+							    #print('new_mask',new_mask)
+							print('num',number)
+							if number>30 and number<300:
+								print(ratio)
+								print('ball detected')
+								cv2.circle(frame,center,2,(0,0,0),3)
+								#time.sleep(100)
+							else:
+								print('no ball')
+							roi = []
+
+    #*************************************************************************************************
+
+        cv2.imshow("Frame", frame)
+
+
+        key = cv2.waitKey(1)
+        if key == 27:
+            break
+
+cap.release()
+cv2.destroyAllWindows()
