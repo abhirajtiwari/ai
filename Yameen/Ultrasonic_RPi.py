@@ -1,150 +1,73 @@
 import RPi.GPIO as GPIO
 import time
-#setting ultrasonc pins
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
-echo_left = 18
-trigger_left = 16
-echo_right = 22
-trigger_right = 12
-#***********************
+echo_left = 17
+trigger_left = 27
+echo_right = 15
+trigger_right = 14
+echo_side_l = 19
+trigger_side_l = 26
+echo_side_r = 21
+trigger_side_r = 20
 
-#setting motor pins
 
-#left_ledf = 1
-#left_ledb = 2
-#right_ledf = 3
-#right_ledb = 4
-
-#********************
-
-#setting output/input
 GPIO.setup(trigger_left, GPIO.OUT)
 GPIO.setup(echo_left, GPIO.IN)
 
 GPIO.setup(trigger_right, GPIO.OUT)
 GPIO.setup(echo_right, GPIO.IN)
 
-#GPIO.setup(left_ledf,GPIO.output)
-#GPIO.setup(left_ledb,GPIO.output)
-#GPIO.setup(right_ledf,GPIO.output)
-#GPIO.setup(right_ledb,GPIO.output)
+GPIO.setup(trigger_side_l, GPIO.OUT)
+GPIO.setup(echo_side_l, GPIO.IN)
 
+GPIO.setup(trigger_side_r, GPIO.OUT)
+GPIO.setup(echo_side_r, GPIO.IN)
 
-#ALGORITHM***********************
+def Ultrasonic(pin,pin2):
+	GPIO.output(pin2,False)
+	time.sleep(0.1)
+
+	GPIO.output(pin2,True)
+	time.sleep(0.00001)
+	GPIO.output(pin2,False)
+
+	while GPIO.input(pin)==0:
+		pass
+	pulse_begins = time.time()
+	
+	while GPIO.input(pin)==1:
+		pulse_stops = time.time()
+		if (pulse_stops-pulse_begins>0.004):
+			pulse_duration = pulse_stops-pulse_begins
+			distance = pulse_duration*34000/2
+			return distance,'not alert'
+			break
+	
+	pulse_duration = pulse_stops-pulse_begins
+	distance = pulse_duration*34000/2
+	return distance,'alert'
+
 while True:
-#******************sensor left
+	dist_lf,alert_lf = Ultrasonic(echo_left,trigger_left)
+	dist_rf,alert_rf = Ultrasonic(echo_right,trigger_right)
+	dist_sl, alert_l = Ultrasonic(echo_side_l,trigger_side_l)
+	dist_sr, alert_r = Ultrasonic(echo_side_r,trigger_side_r)
+	#print(alert_r,alert_l,alert_rf,alert_lf)
+	if alert_rf == 'alert' or alert_lf == 'alert':
+		if dist_lf < dist_rf:
+ 			print('right')
+ 		else:
+ 			print('left')
+ 	
 
-    GPIO.output(trigger_left,False)
-    time.sleep(0.1)
+ 	elif (alert_rf == 'not alert' and alert_lf == 'not alert'):
+ 		print('straight')
+ 		if alert_l == 'alert':
+ 			#rint('cant turn left even if imu is saying')
+ 			print('go straight')# until alert_l == not alert
 
-    GPIO.output(trigger_left,True)
-    time.sleep(0.00001)
-    GPIO.output(trigger_left,False)
-
-    while GPIO.input(echo_left)==0:
-        pass
-    lpulse_begins = time.time()
-
-    while GPIO.input(echo_left)==1:
-        pass
-    lpulse_stops= time.time()
-
-    pulse_duration_left = lpulse_stops - lpulse_begins
-    distance_left = pulse_duration_left * 34000/2
-#*****************************************
-
-#**************sensor right
-    GPIO.output(trigger_right,False)
-    time.sleep(0.1)
-
-    GPIO.output(trigger_right,True)
-    time.sleep(0.00001)
-    GPIO.output(trigger_right,False)
-
-    while GPIO.input(echo_right)==0:
-        pass
-    rpulse_begins = time.time()
-
-    while GPIO.input(echo_right)==1:
-        pass
-    rpulse_stops= time.time()
-
-    pulse_duration_right = rpulse_stops - rpulse_begins
-    distance_right = pulse_duration_right * 34000/2
-#****************************************
-    print('distance_left',distance_left)
-    print('distance_right',distance_right)
-    print('pulse right', pulse_duration_right)
-    print('pulse left',pulse_duration_left)
-
-
-
-    if(distance_left>=25 and distance_right>=25):
-        print('straight')
-        #straight()
-
-    if(distance_left<=25 and distance_right>=25):
-        print('right')
-        #right()
-
-    if(distance_left>=25 and distance_right<=25):
-        print('left')
-
-    if(distance_left<=15 and distance_right<=15 and distance_left <= distance_right and distance_left>10):
-        print('sharp_right')
-        #sharp_right()
-
-    if(distance_left<=15 and distance_right<=15 and distance_left > distance_right and distance_left>10):
-        print('sharp_left')
-        #sharp_left()
-
-    if(distance_left<=10 and distance_right<=10):
-        print('back')
-
-
-
-GPIO.cleanup()
-
-
-
-
-
-'''
-def straight():
-    #GPIO.OUTPUT(left_ledf, HIGH)
-    #GPIO.OUTPUT(left_ledb, LOW)
-    #GPIO.OUTPUT(right_ledf, HIGH)
-    #GPIO.OUTPUT(right_ledb, LOW)
-    print('straight')
-
-def right():
-    #GPIO.OUTPUT(left_ledf,HIGH)
-    #GPIO.OUTPUT(left_ledb,LOW)
-    #GPIO.OUTPUT(right_ledf,LOW)
-    #GPIO.OUTPUT(right_ledb,LOW)
-    print('right')
-
-def left():
-    #GPIO.OUTPUT(left_front,LOW)
-    #GPIO.OUTPUT(left_back,LOW)
-    #GPIO.OUTPUT(right_front,HIGH)
-    #GPIO.OUTPUT(right_back,LOW)
-    print('left')
-
-def sharp_left():
-    #GPIO.OUTPUT(left_front, LOW)
-    #GPIO.OUTPUT(left_back, HIGH)
-    #GPIO.OUTPUT(right_front, HIGH)
-    #GPIO.OUTPUT(right_back, LOW)
-    print('sharp left')
-
-def sharp_left():
-    #GPIO.OUTPUT(left_front, HIGH)
-    #GPIO.OUTPUT(left_back, LOW)
-    #GPIO.OUTPUT(right_front, LOW)
-    #GPIO.OUTPUT(right_back, HIGH)
-    print('sharp right')
-
-'''
+ 		elif alert_r == 'alert':
+ 			#rint('cant turn right even if imu is saying')
+ 			print('go straight')# until alert_r == not alert
