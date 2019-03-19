@@ -13,7 +13,7 @@ comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 host = socket.gethostname()
 
-port = 12345
+port = 1234
 comm_sock.bind(('', port))
 
 comm_sock.listen(5)
@@ -63,8 +63,8 @@ while True and detected == False:
     # frame = cv2.GaussianBlur(un_frame, (5,5), 0)
     frame = np.copy(un_frame)
 
-    # gamma = 0.15
-    gamma = 1
+    gamma = 0.15
+    # gamma = 1
     frame = adjust_gamma(frame, gamma=gamma)
 
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -195,5 +195,6 @@ cv2.imshow('final_frame', final_frame)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 # ser.close()
+tcp_send('d') 
 comm_con.close()
 comm_sock.close()
