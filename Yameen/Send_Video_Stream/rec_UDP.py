@@ -2,7 +2,7 @@ import socket
 import numpy
 import time
 import cv2
-
+#put ip of reciever
 UDP_IP = "192.168.43.61"
 UDP_PORT = 5005
 
@@ -23,4 +23,4 @@ while True:
     cv2.imshow('frame1',frame)
 
     if cv2.waitKey(1) & 0xFF == ord ('q'):
-        break
+break

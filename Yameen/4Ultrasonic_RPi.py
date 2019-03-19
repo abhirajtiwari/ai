@@ -71,5 +71,3 @@ while True:
  		elif alert_r == 'alert':
  			#rint('cant turn right even if imu is saying')
  			print('go straight')# until alert_r == not alert
-
- 	

@@ -15,27 +15,27 @@ def twos_comp(val, bits):
     return val        
 
 def map(x,in_min,in_max,out_min,out_max):
-	return ((x-in_min)*(out_max-out_min)/(in_max-in_min))+out_min
+    return ((x-in_min)*(out_max-out_min)/(in_max-in_min))+out_min
 
 
 
 while (1):
-	msbx=i2c.read_byte_data(add,0x29)
-	lsbx=i2c.read_byte_data(add,0x28)
-	x=(msbx<<8|lsbx)
-	x=twos_comp(x,16)*0.00014
-	msby=i2c.read_byte_data(add,0x2b)
-	lsby=i2c.read_byte_data(add,0x2a)
-	y=(msby<<8|lsby)
-	y=twos_comp(y,16)*0.00014	
-	msbz=i2c.read_byte_data(add,0x2d)
-	lsbz=i2c.read_byte_data(add,0x2c)
-	z=(msbz<<8|lsbz)
-	x=x-0.06
-	y=y-0.35
-	h=math.atan2(y,x)*180/np.pi
-	h=h
-	if h<0:
-		h+=360
-	
-	print h
+    msbx=i2c.read_byte_data(add,0x29)
+    lsbx=i2c.read_byte_data(add,0x28)
+    x=(msbx<<8|lsbx)
+    x=twos_comp(x,16)*0.00014
+    msby=i2c.read_byte_data(add,0x2b)
+    lsby=i2c.read_byte_data(add,0x2a)
+    y=(msby<<8|lsby)
+    y=twos_comp(y,16)*0.00014   
+    msbz=i2c.read_byte_data(add,0x2d)
+    lsbz=i2c.read_byte_data(add,0x2c)
+    z=(msbz<<8|lsbz)
+    x=x-0.06
+    y=y-0.35
+    h=math.atan2(y,x)*180/np.pi
+    h=h
+    if h<0:
+        h+=360
+    
+print h
