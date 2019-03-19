@@ -3,8 +3,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import serial
+# import client_encoded
+import rec_UDP
 
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+#######TEMPORARY TCP COMMS FOR JUST RPI OP############
+#Finally these commands should be replaced by atmega wireless calls
+import socket
+comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = socket.gethostname()
+
+port = 12345
+comm_sock.bind(('', port))
+
+comm_sock.listen(5)
+comm_con, comm_addr = comm_sock.accept()
+
+def tcp_send(data):
+    comm_con.sendall(data)
+######################################################
+
+# ser = serial.Serial('/dev/ttyUSB0', 9600)
 stopped = False
 
 detected= False
@@ -16,19 +35,37 @@ votes_thresh = 8
 cap = cv2.VideoCapture(0)
 # count = 217 #photo count for testing
 
+def adjust_gamma(image, gamma=1.0):
+    if gamma == 0:
+        gamma = 0.01
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+                      for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
+
 while True and detected == False:
     if stopped == False:
-        ser.write('r')
+        # ser.write('r')
+        tcp_send('r')
     key = cv2.waitKey(1)
     if key == ord('q'):
         break
     
-    _, un_frame = cap.read()
+    # _, un_frame = cap.read()
+    un_frame = rec_UDP.getCameraFrame()
+    if un_frame is None:
+        print 'None image'
+        continue
+    # un_frame = client_encoded.getCameraFrame()
     # time.sleep(3)
     # count += 1
     # un_frame = cv2.imread('/home/abhiraj/Mars Rover Manipal/dataset/Day 1/Final Ball day1/{}.jpg'.format(count))
     # frame = cv2.GaussianBlur(un_frame, (5,5), 0)
     frame = np.copy(un_frame)
+
+    # gamma = 0.15
+    gamma = 1
+    frame = adjust_gamma(frame, gamma=gamma)
 
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_green = np.array([29, 60, 20])
@@ -108,11 +145,14 @@ while True and detected == False:
 
             #Try stronger hough params and stop the servo if a circle is detected, at the same time ensuring frames don't overlap with some buffer
             circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=128, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
-            stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=100, param2=25, minRadius=int(w/6), maxRadius=int(w/2)) 
+            stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=150, param2=20, minRadius=int(w/6), maxRadius=int(w/2)) 
             if stringent_circles is not None and detected == False:
-                ser.write('s')
+                # ser.write('s')
+                tcp_send('s')
+                stopped = True
+                print '############################################################# stop rotating ###################'
+            else:
                 stopped = False
-                print '################ stop rotating ###################'
 
             if circles is not None and detected == False:
                 # if started == False:
@@ -151,7 +191,9 @@ while True and detected == False:
 
 cv2.destroyAllWindows()
 cv2.imshow('final_frame', final_frame)
-ser.write('q')
+# ser.write('q')
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-ser.close()
+# ser.close()
+comm_con.close()
+comm_sock.close()
