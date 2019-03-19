@@ -4,7 +4,7 @@ from math import sqrt
 import time
 import socket
 #import RPi.GPIO as GPIO
-UDP_IP = "10.57.0.193"
+UDP_IP = "192.168.43.61"
 UDP_PORT = 10000
 
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -24,6 +24,8 @@ def ROI(img,y_lrange,y_urange,x_lrange,x_urange):
     RoI = img[y_lrange:y_urange,x_lrange:x_urange]
     return RoI
 
+prev = 0
+curr_rad = 0
 while True:
 	#data, addr = sock.recvfrom(10000000)
 	#frame = np.fromstring (data,dtype=np.uint8)
@@ -102,135 +104,134 @@ while True:
 						#print('y,x',y_roi,x_roi)
 						#print('ra',radius)
 						side_length = radius*2
-						side_length = int(siSde_length)
+						side_length = int(side_length)
 						#print('side_le',side_length)
 						length = (side_length/sqrt(2) - radius)/sqrt(2)
 						length = int(length)
 
+						roi_gray = cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
+				
+						circles = cv2.HoughCircles(roi_gray,cv2.HOUGH_GRADIENT,1,20,param1=50,param2=30,minRadius=0,maxRadius=0)
+						if circles is not None:
+							circles = np.round(circles[0,:]).astype("int")
+							for (x_cor,y_cor,radii) in circles:
+	   							curr_rad = radii
+	   							if curr_rad>prev:
+	   								max_rad = curr_rad
+	   								x_cen = x_cor
+	   								y_cen = y_cor
+							prev = curr_rad
+							#print('le',length)
+							#print('length_roi',len(roi))
+							roi_in_circle_tl = roi[y_cor/2 - length: y_cor/2, x_cor/2 - length: x_cor/2]   #inside circle top left roi
+							roi_in_circle_tr = roi[y_cor/2 - length: y_cor/2, x_cor/2: x_cor/2 + length]   #inside circle top right roi
+							roi_in_circle_bl = roi[y_cor/2: y_cor/2 + length, x_cor/2 - length: x_cor/2]   #inside circle bottom left roi
+							roi_in_circle_br = roi[y_cor/2: y_cor/2 + length, x_cor/2: x_cor/2 + length]   #inside circle bottom right roi
+							roi_out_circle_tl = roi[0:length,0:length]
+							roi_out_circle_tr = roi[0:length,side_length - length:side_length]
+							roi_out_circle_bl = roi[side_length - length:side_length,0:length]
+							roi_out_circle_br = roi[side_length - length:side_length,side_length - length:side_length]
+							
+							
+							ar1,ar2,_ = roi.shape
+							if ar1==0 or ar2==0:
+								break
+							
+							ar1,ar2,_ = roi_in_circle_tl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_tr.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_bl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_in_circle_br.shape
+							if ar1==0 or ar2==0:
+								break
 
-						x_c=[]
-						y_c=[]
-						ra=[]
-						for (x_cor,y_cor,radii) in circles[0,:]:
-   							x_c.append(x_cor)
-   							y_c.append(y_cor)
-   							ra.append(radii)
-						
-						#print('le',length)
-						#print('length_roi',len(roi))
-						roi_in_circle_tl = roi[y_roi/2 - length: y_roi/2, x_roi/2 - length: x_roi/2]   #inside circle top left roi
-						roi_in_circle_tr = roi[y_roi/2 - length: y_roi/2, x_roi/2: x_roi/2 + length]   #inside circle top right roi
-						roi_in_circle_bl = roi[y_roi/2: y_roi/2 + length, x_roi/2 - length: x_roi/2]   #inside circle bottom left roi
-						roi_in_circle_br = roi[y_roi/2: y_roi/2 + length, x_roi/2: x_roi/2 + length]   #inside circle bottom right roi
-						roi_out_circle_tl = roi[0:length,0:length]
-						roi_out_circle_tr = roi[0:length,side_length - length:side_length]
-						roi_out_circle_bl = roi[side_length - length:side_length,0:length]
-						roi_out_circle_br = roi[side_length - length:side_length,side_length - length:side_length]
-						
-						if len(roi_in_circle_tl) == 0:
-							break
-						if len(roi_in_circle_tr) == 0:
-							break
-						if len(roi_in_circle_bl) == 0:
-							break
-						if len(roi_in_circle_br) == 0:
-							break
-						if len(roi_out_circle_tl) == 0:
-							break
-						if len(roi_out_circle_tr) == 0:
-							break
-						if len(roi_out_circle_bl) == 0:
-							break
-						if len(roi_out_circle_br) == 0:
-							break
-						
-						ar1,ar2,_ = roi.shape
-						if ar1==0 or ar2==0:
-							break
+							ar1,ar2,_ = roi_out_circle_tl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_tr.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_bl.shape
+							if ar1==0 or ar2==0:
+								break
+							ar1,ar2,_ = roi_out_circle_br.shape
+							if ar1==0 or ar2==0:
+								break
 
-						cv2.imshow('roi',roi)
-						ar1,ar2,_ = roi_out_circle_tl.shape
-						if ar1==0 or ar2==0:
-							break
-						ar1,ar2,_ = roi_out_circle_tr.shape
-						if ar1==0 or ar2==0:
-							break
-						ar1,ar2,_ = roi_out_circle_bl.shape
-						if ar1==0 or ar2==0:
-							break
-						ar1,ar2,_ = roi_out_circle_br.shape
-						if ar1==0 or ar2==0:
-							break
+							mask_in_tl = cv2.inRange(roi_in_circle_tl, lower_green1, upper_green1)
+							mask_in_tr = cv2.inRange(roi_in_circle_tr, lower_green1, upper_green1) 
+							mask_in_bl = cv2.inRange(roi_in_circle_bl, lower_green1, upper_green1)
+							mask_in_br = cv2.inRange(roi_in_circle_br, lower_green1, upper_green1)
+							mask_out_tl = cv2.inRange(roi_out_circle_tl, lower_green1, upper_green1)
+							mask_out_tr = cv2.inRange(roi_out_circle_tr, lower_green1, upper_green1)
+							mask_out_bl = cv2.inRange(roi_out_circle_bl, lower_green1, upper_green1)
+							mask_out_br = cv2.inRange(roi_out_circle_br, lower_green1, upper_green1)
+							
+							if mask_in_tl.shape != mask_in_tr.shape:
+								break
+							if mask_in_bl.shape != mask_in_br.shape:
+								break
+							if mask_out_tl.shape != mask_out_tr.shape:
+								break
+							if mask_out_bl.shape != mask_out_br.shape:
+								break
 
-						mask_in_tl = cv2.inRange(roi_in_circle_tl, lower_green1, upper_green1)
-						mask_in_tr = cv2.inRange(roi_in_circle_tr, lower_green1, upper_green1) 
-						mask_in_bl = cv2.inRange(roi_in_circle_bl, lower_green1, upper_green1)
-						mask_in_br = cv2.inRange(roi_in_circle_br, lower_green1, upper_green1)
-						mask_out_tl = cv2.inRange(roi_out_circle_tl, lower_green1, upper_green1)
-						mask_out_tr = cv2.inRange(roi_out_circle_tr, lower_green1, upper_green1)
-						mask_out_bl = cv2.inRange(roi_out_circle_bl, lower_green1, upper_green1)
-						mask_out_br = cv2.inRange(roi_out_circle_br, lower_green1, upper_green1)
-						
-						if mask_in_tl.shape != mask_in_tr.shape:
-							break
-						if mask_in_bl.shape != mask_in_br.shape:
-							break
-						if mask_out_tl.shape != mask_out_tr.shape:
-							break
-						if mask_out_bl.shape != mask_out_br.shape:
-							break
+							inside_top_mask = cv2.bitwise_or(mask_in_tl,mask_in_tr)
+							inside_bottom_mask = cv2.bitwise_or(mask_in_bl,mask_in_br)
+							
+							if inside_top_mask.shape != inside_bottom_mask.shape:
+								break
 
-						inside_top_mask = cv2.bitwise_or(mask_in_tl,mask_in_tr)
-						inside_bottom_mask = cv2.bitwise_or(mask_in_bl,mask_in_br)
-						
-						if inside_top_mask.shape != inside_bottom_mask.shape:
-							break
+							inside_mask = cv2.bitwise_or(inside_top_mask,inside_bottom_mask)
+							outside_top_mask = cv2.bitwise_and(mask_out_tl,mask_out_tr)
+							outside_bottom_mask = cv2.bitwise_and(mask_out_bl,mask_out_br)
 
-						inside_mask = cv2.bitwise_or(inside_top_mask,inside_bottom_mask)
-						outside_top_mask = cv2.bitwise_and(mask_out_tl,mask_out_tr)
-						outside_bottom_mask = cv2.bitwise_and(mask_out_bl,mask_out_br)
+							if outside_top_mask.shape != outside_bottom_mask.shape:
+								break
 
-						if outside_top_mask.shape != outside_bottom_mask.shape:
-							break
-
-						outside_mask = cv2.bitwise_and(outside_top_mask,outside_bottom_mask)
-						'''
-						cv2.imshow('mask_in_tl',roi_in_circle_tl)
-						cv2.imshow('mask_in_tr',roi_in_circle_tr)
-						cv2.imshow('mask_in_bl',roi_in_circle_bl)
-						cv2.imshow('mask_in_br',roi_in_circle_br)
-						cv2.imshow('mask_out_tl',roi_out_circle_tl)
-						cv2.imshow('mask_out_tr',roi_out_circle_tr)
-						cv2.imshow('mask_out_bl',roi_out_circle_bl)
-						cv2.imshow('mask_out_br',roi_out_circle_br)
-						'''
-						
-						cv2.imshow('mask_in_tl',mask_in_tl)
-						cv2.imshow('mask_in_tr',mask_in_tr)
-						cv2.imshow('mask_in_bl',mask_in_bl)
-						cv2.imshow('mask_in_br',mask_in_br)
-						cv2.imshow('mask_out_tl',mask_out_tl)
-						cv2.imshow('mask_out_tr',mask_out_tr)
-						cv2.imshow('mask_out_bl',mask_out_bl)
-						cv2.imshow('mask_out_br',mask_out_br)
-					
-						cv2.imshow('inside_mask',inside_mask)
-						cv2.imshow('outside_mask',outside_mask)
-						new_mask = cv2.bitwise_xor(inside_mask,outside_mask)
-						
-						cv2.imshow('new_mask',new_mask)
-						number = np.count_nonzero(new_mask)
-						#print('number is',number)
-						    #print('new_mask',new_mask)
-						print('num',number)
-						if number>30 and number<300:
-							print(ratio)
-							print('ball detected')
-							cv2.circle(frame,center,2,(0,0,0),3)
-							#time.sleep(100)
-						else:
-							print('no ball')
-						roi = []
+							outside_mask = cv2.bitwise_and(outside_top_mask,outside_bottom_mask)
+							'''
+							cv2.imshow('mask_in_tl',roi_in_circle_tl)
+							cv2.imshow('mask_in_tr',roi_in_circle_tr)
+							cv2.imshow('mask_in_bl',roi_in_circle_bl)
+							cv2.imshow('mask_in_br',roi_in_circle_br)
+							cv2.imshow('mask_out_tl',roi_out_circle_tl)
+							cv2.imshow('mask_out_tr',roi_out_circle_tr)
+							cv2.imshow('mask_out_bl',roi_out_circle_bl)
+							cv2.imshow('mask_out_br',roi_out_circle_br)
+							'''
+							
+							cv2.imshow('mask_in_tl',mask_in_tl)
+							cv2.imshow('mask_in_tr',mask_in_tr)
+							cv2.imshow('mask_in_bl',mask_in_bl)
+							cv2.imshow('mask_in_br',mask_in_br)
+							cv2.imshow('mask_out_tl',mask_out_tl)
+							cv2.imshow('mask_out_tr',mask_out_tr)
+							cv2.imshow('mask_out_bl',mask_out_bl)
+							cv2.imshow('mask_out_br',mask_out_br)
+							
+							cv2.imshow('inside_mask',inside_mask)
+							cv2.imshow('outside_mask',outside_mask)
+							new_mask = cv2.bitwise_xor(inside_mask,outside_mask)
+							
+							cv2.imshow('new_mask',new_mask)
+							number = np.count_nonzero(new_mask)
+							#print('number is',number)
+							    #print('new_mask',new_mask)
+							print('num',number)
+							if number>30 and number<300:
+								print(ratio)
+								print('ball detected')
+								cv2.circle(frame,center,2,(0,0,0),3)
+								#time.sleep(100)
+							else:
+								print('no ball')
+							roi = []
 
     #*************************************************************************************************
 
