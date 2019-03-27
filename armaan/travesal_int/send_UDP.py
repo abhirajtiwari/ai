@@ -3,6 +3,7 @@ import cv2
 import socket
 import RPi.GPIO as GPIO
 import system
+import serial
 GPIO.setmode(GPIO.BCM)
 ldir=5
 lspeed=13
@@ -15,7 +16,8 @@ GPIO.setup(rspeed,GPIO.OUT)
 UDP_IP = '192.168.43.138'
 UDP_PORT = 5005
 port=12344
-
+ser=serial.Serial('/dev/serial0')
+ser.baudrate=38400
 cap = cv2.VideoCapture(0)
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 a=GPIO.PWM(lspeed,100)
@@ -24,8 +26,9 @@ a.start(50)
 c.start(50)
 ack='c'
 def right():
-    GPIO.output(ldir,1)	
-    GPIO.output(rdir,0)
+    #GPIO.output(ldir,1)	
+    #GPIO.output(rdir,0)
+    ser.write(chr(6))
     return
 
 try: 

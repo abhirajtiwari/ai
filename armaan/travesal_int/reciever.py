@@ -21,6 +21,7 @@ hmax=64
 smax=255
 vmax=255
 
+
 try:
 	while True:
 	    conn,addr=s.accept()
@@ -132,7 +133,7 @@ try:
 		 	  			if abs(cx-(x+xop))>8 or abs(cx-(x+xop))>8:
 							continue
 						print "ball"
-			  			c.sendall('b')
+			  			conn.sendall('b')
 						
 			
 			  			cv2.circle(frame,(xop+x,yop+y),maxval,(0,255,0),4)

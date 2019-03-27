@@ -5,6 +5,7 @@ from gps3 import gps3
 import numpy as np
 import RPi.GPIO as GPIO 
 import os
+import serial
 GPIO.setmode(GPIO.BCM)
 trig1=27
 echo1=17
@@ -26,7 +27,7 @@ GPIO.setup(echo1,GPIO.IN)
 GPIO.setup(echo2,GPIO.IN)
 GPIO.setup(echo3,GPIO.IN)
 GPIO.setup(echo4,GPIO.IN)
-GPIO.setup(ldir,GPIO.OUT)
+"""GPIO.setup(ldir,GPIO.OUT)
 GPIO.setup(lspeed,GPIO.OUT)
 GPIO.setup(rdir,GPIO.OUT)
 GPIO.setup(rspeed,GPIO.OUT)
@@ -34,7 +35,9 @@ a=GPIO.PWM(lspeed,100)
 c=GPIO.PWM(rspeed,100)
 a.start(50)
 c.start(50)
-
+"""
+ser=serial.Serial('/dev/serial0')
+ser.baudrate=38400
 
 gps_socket = gps3.GPSDSocket()
 data_stream = gps3.DataStream()
@@ -61,23 +64,27 @@ lat1 = 0.0000000
 lon1 = 0.0000000
 bus = smbus.SMBus(1)
 def left():
-    GPIO.output(ldir,0)	
-    GPIO.output(rdir,1)
+    """GPIO.output(ldir,0)	
+    GPIO.output(rdir,1)"""
+    ser.write(chr(4))
     return
 def right():
-    GPIO.output(ldir,1)	
-    GPIO.output(rdir,0)
+    """GPIO.output(ldir,1)	
+    GPIO.output(rdir,0)"""
+    ser.write(chr(3))
     return
 def front():
-    GPIO.output(ldir,1)	
+    """GPIO.output(ldir,1)	
     GPIO.output(rdir,1)
     a.ChangeDutyCycle(50)	
-    c.ChangeDutyCycle(50)
+    c.ChangeDutyCycle(50)"""
+    ser.write(chr(1))
     return
 def back():
-    GPIO.output(ldir,0)	
+    """GPIO.output(ldir,0)	
     GPIO.output(rdir,0)	
-    
+    """
+    ser.write(chr(2))
     return 
 def twos_complement(val, bits):
     if (val & (1 << (bits - 1))) != 0:
@@ -186,7 +193,7 @@ for new_data in gps_socket:
 	trigger(trig4)
 	d4=pulsein(echo4)
 	print d1,d2,d3,d4
-	if d1<30:
+	if d1<30 and d1<d2:
 		#90 degree right
 		print"right overide"
 		while adiff<91:
@@ -197,9 +204,9 @@ for new_data in gps_socket:
 			
 					
 			right()
-			a.ChangeDutyCycle(50)	
+			"""a.ChangeDutyCycle(50)	
     			c.ChangeDutyCycle(50)	
-    
+    			"""
 			finalhead=getheading()
 			adiff=abs(finalhead-h)
 			if adiff>180:
@@ -212,8 +219,8 @@ for new_data in gps_socket:
 			
 					
 			left()
-			a.ChangeDutyCycle(50)	
-    			c.ChangeDutyCycle(50)
+			"""a.ChangeDutyCycle(50)	
+    			c.ChangeDutyCycle(50)"""
 			finalhead=getheading()
 			adiff=abs(finalhead-h)
 			
@@ -272,15 +279,17 @@ for new_data in gps_socket:
 		 
 		if turn=="front":
 			front()
-			a.ChangeDutyCycle(50)	
-    			c.ChangeDutyCycle(50)
+			"""a.ChangeDutyCycle(50)	
+    			c.ChangeDutyCycle(50)"""
 		elif turn=="right":
 			right()
+			""""
 			a.ChangeDutyCycle(50)	
-    			c.ChangeDutyCycle(50)
+    			c.ChangeDutyCycle(50)"""
 		elif turn=="left":
+			"""
 			a.ChangeDutyCycle(50)	
-    			c.ChangeDutyCycle(50)
+    			c.ChangeDutyCycle(50)"""
 			left()			
         print dist,tfinal,turn 
     	
