@@ -4,6 +4,7 @@ import math as m
 from gps3 import gps3
 import numpy as np
 import RPi.GPIO as GPIO
+import serial
 
 add=0x1e
 
@@ -71,6 +72,10 @@ GPIO.setup(echo_side_l, GPIO.IN)
 GPIO.setup(trigger_side_r, GPIO.OUT)
 GPIO.setup(echo_side_r, GPIO.IN)
 
+ser = serial.Serial('/dev/serial0',38400)
+
+def state(ch):
+	ser.write(ch)
 
 def Ultrasonic(pin,pin2):
 	time.sleep(0.1)
@@ -139,7 +144,7 @@ def Bearing(lat2,lon2):
 
 			distance = rad * c
 			print('dist',distance)
-			return distance, degree,dist
+			return distance, degree
 
 
 def LSM(min_x,max_x,min_y,max_y,min_z,max_z):
@@ -237,7 +242,7 @@ while True:
 				print('Turn Right')
 				print(abs(head-init_head))
 				state(chr(6))
-				turning, head = LSM(min_x, max_x, min_y, max_y, min_z, min_z)
+				turning, head, doorie = LSM(min_x, max_x, min_y, max_y, min_z, min_z)
 				if (abs(head-init_head)<75 or abs(head-init_head)>295):
 					continue
 				dist_lf,alert_lf = Ultrasonic(echo_left,trigger_left)
@@ -252,7 +257,7 @@ while True:
 				print('Turn Left')
 				print(abs(head-init_head))
 				state(chr(7))
-				turning, head = LSM(min_x, max_x, min_y, max_y, min_z, min_z)
+				turning, head, doorie = LSM(min_x, max_x, min_y, max_y, min_z, min_z)
 				if (abs(head-init_head)<75 or abs(head-init_head)>295):
 					continue
 				dist_lf,alert_lf = Ultrasonic(echo_left,trigger_left)
@@ -327,4 +332,5 @@ while True:
 	#print('___________________________')
 
 	except KeyboardInterrupt:
+		state(chr(5))
 		GPIO.cleanup()
