@@ -35,38 +35,50 @@ def convertPWMtoDC(speed):
 def forward(speed):
     #use send packet to set the speed and move forward
     print 'Forward'
+    atser.write(chr(1))
+    '''
     speed = convertPWMtoDC(speed)
     gpio.output(motorr, gpio.HIGH)
     gpio.output(motorl, gpio.HIGH)
     lpwm.ChangeDutyCycle(speed)
     rpwm.ChangeDutyCycle(speed)
-    
+    '''
+
 def backward(speed):
     print 'Backward'
+    atser.write(chr(2))
+    '''
     speed = convertPWMtoDC(speed)
     gpio.output(motorr, gpio.LOW)
     gpio.output(motorl, gpio.LOW)
     lpwm.ChangeDutyCycle(speed)
     rpwm.ChangeDutyCycle(speed)
+    '''
 
 def right0(speed):
     #0 radius right turn
     print '0 radius right'
+    atser.write(chr(3))
+    '''
     speed = convertPWMtoDC(speed)
     gpio.output(motorr, gpio.LOW)
     gpio.output(motorl, gpio.HIGH)
     lpwm.ChangeDutyCycle(speed)
     rpwm.ChangeDutyCycle(speed)
+    '''
 
 
 def left0(speed):
     #0 radius left turn
     print '0 radius left'
+    atser.write(chr(4))
+    '''
     speed = convertPWMtoDC(speed)
     gpio.output(motorr, gpio.HIGH)
     gpio.output(motorl, gpio.LOW)
     lpwm.ChangeDutyCycle(speed)
     rpwm.ChangeDutyCycle(speed)
+    '''
 
 def right90(speed):
     curr_head = justimu.getHead()
@@ -97,8 +109,15 @@ def uturn(speed):
     right0(speed)
 
 def stop():
+    print 'stop'
+    atser.write(chr(5))
+    '''
     lpwm.ChangeDutyCycle(0)
     rpwm.ChangeDutyCycle(0)
+    '''
+
+def clean():
+    gpio.cleanup()
 # def sendJoystick(x, y):
     #send the joystick vals
 

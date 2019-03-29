@@ -1,12 +1,16 @@
 import RPi.GPIO as gpio
+import serial
 
+atser = serial.Serial('/dev/serial0', 38400)
+
+gpio.setmode(gpio.BCM)
+
+'''
 ###MOTORS###
 motorl = 5
 motorlp = 13
 motorr = 23
 motorrp = 18
-
-gpio.setmode(gpio.BCM)
 
 gpio.setup(motorl, gpio.OUT)
 gpio.setup(motorlp, gpio.OUT)
@@ -18,19 +22,20 @@ rpwm = gpio.PWM(motorrp, 50)
 
 lpwm.start(0)
 rpwm.start(0)
+'''
 
 ###ULTRASONICS###
 side_thresh = 30
 front_thresh = 30
 
-triggerrf = 9
-echorf = 11
-triggerlf = 19
-echolf = 26
-triggerrs = 8
-echors = 25
-triggerls = 20
-echols = 16
+triggerrf = 8
+echorf = 25
+triggerlf = 9
+echolf = 11
+triggerrs = 20 
+echors = 16
+triggerls = 19
+echols = 26
 
 gpio.setup(echorf, gpio.IN)
 gpio.setup(echolf, gpio.IN)

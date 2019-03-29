@@ -1,4 +1,5 @@
 import time
+import subprocess
 import rover_connections
 from rover_connections import *
 import numpy as np
@@ -130,6 +131,9 @@ try:
             else:
                 rover_core.forward(speed)
 
+        print "Gate {} reached.\n".format(i)
+        rover_core.stop()
+        subprocess.Popen(['python', 'sen_UDP.py']).wait()
         print "Gate {} completed.\n".format(i)
         resp = raw_input("Proceed for next gate [n], switch to manual [m]: ")
         if resp != 'n' and resp != 'm':
@@ -138,5 +142,6 @@ try:
 except KeyboardInterrupt:
     gpio.cleanup()
 
+rover_core.stop()
 gpio.cleanup()
 print 'Finished auto, Exiting...'

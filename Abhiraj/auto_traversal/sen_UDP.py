@@ -1,10 +1,10 @@
 import time
 import cv2 
 import socket
-# import rover_core
+import rover_core
 
-# UDP_IP = "192.168.43.61"
-UDP_IP = '127.0.0.1'
+UDP_IP = "192.168.43.32"
+# UDP_IP = '127.0.0.1'
 UDP_PORT = 5005
 
 cap = cv2.VideoCapture(0)
@@ -13,7 +13,7 @@ sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 #############TEMPORARY TCP ################
 comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 TCP_IP = UDP_IP
-TCP_PORT = 12345
+TCP_PORT = 1234
 comm_sock.connect((TCP_IP, TCP_PORT))
 ##########################################
 
@@ -38,15 +38,22 @@ while(True):
     else:
         ignore_commands = False
 
+    if command == 'd':
+        print 'ball detected'
+        break
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
     if command == 'r':
         print command
-        # rover_core.right0(128)
+        rover_core.right0(128)
     if command == 's':
         t1 = time.time()
+        rover_core.stop()
         ignore_commands = True
 
 cap.release()
+comm_sock.close()
+sock.close()
 cv2.destroyAllWindows()

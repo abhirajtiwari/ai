@@ -178,9 +178,13 @@ while True and detected == False:
                             indices = np.where(voter == np.amax(voter))
                             # print indices
                             final_frame = cv2.circle(un_frame, (indices[0]*20, indices[1]*20) , 3, (255,0,0), 3) 
-                            detected = True
+                            # detected = True
                             print 'final ball detected'
-                            break
+                            cv2.imshow('final_frame', final_frame)
+                            tcp_send('d')
+                            cv2.waitKey(0)
+                            cv2.destroyWindow('final_frame')
+                            # break
                         # if time_elapsed > 2:
                         #     print 'voter reset'
                         #     started = False
