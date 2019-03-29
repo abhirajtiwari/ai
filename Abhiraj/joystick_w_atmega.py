@@ -9,29 +9,36 @@ joy = pygame.joystick.Joystick(0)
 joy.init()
 
 #Udit's baudrate 38400
-ser = serial.Serial('/dev/ttyUSB0', 2400)
+ser = serial.Serial('/dev/ttyUSB0', 38400)
 
 
 try:
+    numgears = 5
     x_joy = 0
     y_joy = 0
+    gear= 0
     x_joy_last = 0
     y_joy_last = 0
+    gear_last = 0
     addx = 512
     addy = 512
     while True:
-        time.sleep(0.01) #WHY?????? DOES THIS MAKE IT SMOOTH
+        # time.sleep(0.01) #WHY?????? DOES THIS MAKE IT SMOOTH
         x_joy = x_joy_last 
         y_joy = y_joy_last
+        gear = gear_last
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0:
                     x_joy = event.value*512 #-255 because the joystick was reverse mapped
                 elif event.axis == 1:
                     y_joy = event.value*-512
+                elif event.axis == 3:
+                    gear = event.value
 
         x_joy_last = x_joy
         y_joy_last = y_joy
+        gear_last = gear
 
         x_joy = int(x_joy)
         y_joy = int(y_joy)
@@ -39,7 +46,10 @@ try:
         y_joy = y_joy + addy
         x_joy = max(min(1023, x_joy), 0)
         y_joy = max(min(1023, y_joy), 0)
-        print x_joy, y_joy
+
+        gear = int(abs((gear * (numgears/2)) - (numgears/2)))
+
+        print x_joy, y_joy, gear
 
         #######UDIT'S MASKING#######
         # sending x
