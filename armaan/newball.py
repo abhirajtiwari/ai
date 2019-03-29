@@ -113,7 +113,7 @@ while(1):
            x,y,w,h = cv2.boundingRect(i)
            ratio=float(w)/h
 	   #print ratio
-           if ratio>0.9 and ratio<2:
+           if ratio>0.9 and ratio<2.2:
             update.append(i)  
             
                
@@ -123,9 +123,10 @@ while(1):
      #c= max(update, key = cv2.contourArea)
 	     x,y,w,h = cv2.boundingRect(i)
 	     moments=cv2.moments(i)
+	     area=cv2.contourArea(i)
 	     cx = int(moments['m10']/moments['m00'])
              cy = int(moments['m01']/moments['m00'])
-	     
+	      
 	     xmin=int(x/2)
 	     ymin=int(y/2)
 	     xrange1=int((w)*1.2)
@@ -141,9 +142,9 @@ while(1):
 	     hist_left = cv2.calcHist([roi_left],[0],None,[256],[0,256])
 	     hist_right = cv2.calcHist([roi_right],[0],None,[256],[0,256])
 	     #print roi_left
-	     if hist_right[255]>hist_main[255]/1.65 and hist_left[255]>hist_main[255]/1.65:
+	     """if hist_right[255]>hist_main[255]/1.65 and hist_left[255]>hist_main[255]/1.65	:
 		continue
-	     	 
+	     """	 
 	     
 	     roi=blur[y:y+yrange,x:x+xrange1]
 	     	
@@ -158,15 +159,16 @@ while(1):
 
 	      #print(roi)  
 	      #roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-	      circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=200,param2=15,minRadius=int(w/3),maxRadius=int(w/2))
-	      cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)  
-	      cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2-xrange1,y+yrange),(0,255,0),2)
-	      cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2+xrange1,y+yrange),(0,255,0),2)
+	      circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=200,param2=13,minRadius=int(w/3),maxRadius=int(w/2))
+	        
+	      #cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2-xrange1,y+yrange),(0,255,0),2)
+	      #cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2+xrange1,y+yrange),(0,255,0),2)
 	     
 	      if circles is not None:
 		     
 		  circles=np.round(circles[0,:]).astype("int")
 		  prev=0
+		  #find largest circle
 		  for(xc,yc,rc) in circles:
 			curr=rc
 			if curr>prev:
@@ -174,10 +176,18 @@ while(1):
 				xop=xc
 				yop=yc
 			prev=curr
-				 
-	 	  if abs(cx-(x+xop))>20 or abs(cx-(x+xop))>20:
+		  
+		  circleratio=area/(np.pi*maxval*maxval)
+		  
+		  print area,np.pi*maxval*maxval,circleratio
+		  #compare areas
+		  if circleratio<0.5:
 			continue
-		  print("ball")
+		  #compare centroid			 
+	 	  if abs(cx-(x+xop))>8 or abs(cy-(y+yop))>8:
+			continue
+		  print "ball"
+		  cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)
 		  cv2.circle(frame,(xop+x,yop+y),maxval,(0,255,0),4)
 		  cv2.circle(frame,(xop+x,yop+y),2,(255,0,0),2)
 	      else:
