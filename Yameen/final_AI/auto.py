@@ -22,8 +22,8 @@ gpsdsock.watch()
 
 
 adjustment=360
-x_manual=-0.2125
-y_manual=0.8025
+x_manual=0.1305
+y_manual=1.0655
 
 g = 0
 gate = input("Enter number of gates!!")
@@ -138,7 +138,7 @@ def Bearing(lat2,lon2):
 				degree += 360
 
 		# apply formulae
-			a = (pow(m.sin(dLat / 2), 2) + pow(m.sin(dLon / 2), 2) * m.cos(lat1) * m.cos(lat2))
+			a = (pow(m.sin(dLat / 2), 2) + pow(m.sin(dLon / 2), 2) * m.cos(lat1) * m.cos(lat[g]))
 			rad = 6378.1*1000
 			c = 2 * m.asin(m.sqrt(a))
 
@@ -194,7 +194,7 @@ def LSM(min_x,max_x,min_y,max_y,min_z,max_z):
 		heading=(heading+adjustment)%360
 
 		#print("HEADING is", heading)
-
+		print('da',lat[g],lon[g])
 
 		dist, deg = Bearing(lat[g], lon[g])
 		print('head',heading)
