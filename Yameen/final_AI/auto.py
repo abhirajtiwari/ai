@@ -128,17 +128,17 @@ def Bearing(lat2,lon2):
 
 		# convert to radians
 			lat1 = (lat1) * m.pi / 180.0
-			lat[g] = (lat[g]) * m.pi / 180.0
+			lat2 = (lat[g]) * m.pi / 180.0
 
-			y = m.cos(lat[g]) * m.sin(dLon)
-			x = (m.cos(lat1) * m.sin(lat[g])) - (m.sin(lat1) * m.cos(lat[g]) * m.cos(dLon))
+			y = m.cos(lat2) * m.sin(dLon)
+			x = (m.cos(lat1) * m.sin(lat2)) - (m.sin(lat1) * m.cos(lat2) * m.cos(dLon))
 			degree = m.atan2(y, x) * 180 / m.pi
 
 			if degree < 0:
 				degree += 360
 
 		# apply formulae
-			a = (pow(m.sin(dLat / 2), 2) + pow(m.sin(dLon / 2), 2) * m.cos(lat1) * m.cos(lat[g]))
+			a = (pow(m.sin(dLat / 2), 2) + pow(m.sin(dLon / 2), 2) * m.cos(lat1) * m.cos(lat2))
 			rad = 6378.1*1000
 			c = 2 * m.asin(m.sqrt(a))
 
