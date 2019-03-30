@@ -4,15 +4,8 @@ import socket
 import RPi.GPIO as GPIO
 import system
 import serial
+#put IP of reciever 
 GPIO.setmode(GPIO.BCM)
-ldir=5
-lspeed=13
-rdir=23
-rspeed=18
-GPIO.setup(ldir,GPIO.OUT)
-GPIO.setup(lspeed,GPIO.OUT)
-GPIO.setup(rdir,GPIO.OUT)
-GPIO.setup(rspeed,GPIO.OUT)
 UDP_IP = '192.168.43.138'
 UDP_PORT = 5005
 port=12344

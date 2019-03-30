@@ -4,10 +4,10 @@ import cv2.cv as cv
 import time
 import cv2
 #server 
-#put ip of reciever
+
 UDP_IP = ''
 UDP_PORT = 5005
-port=12345
+
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sock.bind ((UDP_IP, UDP_PORT))
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
