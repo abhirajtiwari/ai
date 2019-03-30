@@ -7,18 +7,14 @@ import RPi.GPIO as GPIO
 import os
 import serial
 GPIO.setmode(GPIO.BCM)
-trig1=27
-echo1=17
-trig2=14
-echo2=15
-trig3=26
-echo3=19
+trig1=9
+echo1=11
+trig2=8
+echo2=25
+trig3=19
+echo3=26
 trig4=20
-echo4= 21
-ldir=9
-lspeed=11
-rdir=23
-rspeed=24
+echo4= 16
 GPIO.setup(trig1,GPIO.OUT)
 GPIO.setup(trig2,GPIO.OUT)
 GPIO.setup(trig3,GPIO.OUT)
@@ -54,9 +50,9 @@ max_y=0
 min_z=0
 max_z=0
 
-l=360-179
-x_manual=1.6575
-y_manual=2.424
+l=360-0
+x_manual=0.1305
+y_manual=1.0655
 
 lat2 =  13.3478
 lon2 =  74.79223
@@ -158,14 +154,14 @@ def getheading():
 	out_z_m_h = bus.read_byte_data(0x1E, 0x2D)
 	z = twos_complement((out_z_m_h << 8) | out_z_m_l, 16) / 1e3
 	#print("Z=",z, "gauss")
-	x=x-1.6575
-        y=y-2.424
+	x=x-x_manual
+        y=y-y_manual
 	
 
 	h=math.atan2(y,x)*180/math.pi
 	if h<0:
 		h+=360
-	h=(h+360-179)%360
+	h=(h+l)%360
 	return h
 		
 bus.write_byte_data(0x1E, 0x20, 0b01111100)
@@ -173,12 +169,12 @@ bus.write_byte_data(0x1E, 0x21, 0b00000000)
 bus.write_byte_data(0x1E, 0x22, 0b00000000)
 bus.write_byte_data(0x1E, 0x23, 0b00001100)
 #infinite loop
-gate_no=input("enter number of gates") 
+gate_no=input("enter number of gates ") 
 latarr=[]
 lonarr=[]
 for coun in range(gate_no):
-	latarr.append(float(input("Enter latitude")))
-	lonarr.append(float(input("Enter longitude")))
+	latarr.append(float(input("Enter latitude ")))
+	lonarr.append(float(input("Enter longitude ")))
 cood=0
 for new_data in gps_socket:
 	adiff=0
@@ -193,6 +189,7 @@ for new_data in gps_socket:
 	trigger(trig4)
 	d4=pulsein(echo4)
 	print d1,d2,d3,d4
+	
 	if d1<30 and d1<d2:
 		#90 degree right
 		print"right overide"
@@ -232,7 +229,7 @@ for new_data in gps_socket:
 		front()
 		
 	else:		
-		 print"correct path"
+		print"correct path"
 
 	#path correction
 		if new_data:
@@ -274,6 +271,7 @@ for new_data in gps_socket:
 				cood+=1
 				
 				if cood==gate_no:
+					ser.write(chr(5))
 					quit()
 				#i+=1 
 		 
@@ -293,3 +291,5 @@ for new_data in gps_socket:
 			left()			
         print dist,tfinal,turn 
     	
+
+
