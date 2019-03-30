@@ -339,7 +339,7 @@ def ultrasonic():
         if (distance1 > threshold) and (distance2 > threshold):
             pass
 
-        elif (distance1 < threshold+5) and (distance2 < threshold+5):
+        elif (distance1 < threshold+5) or (distance2 < threshold+5):
             backward()
             p.ChangeDutyCycle(50)
             q.ChangeDutyCycle(50)
