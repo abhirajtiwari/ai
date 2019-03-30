@@ -14,7 +14,13 @@ comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname()
 
 port = 1234
-comm_sock.bind(('', port))
+while True:
+    try:
+        comm_sock.bind(('', port))
+        print 'opened socket at ', port
+        break
+    except socket.error:
+        port += 1
 
 comm_sock.listen(5)
 comm_con, comm_addr = comm_sock.accept()
@@ -145,7 +151,7 @@ while True and detected == False:
 
             #Try stronger hough params and stop the servo if a circle is detected, at the same time ensuring frames don't overlap with some buffer
             circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=128, param2=15, minRadius=int(w/6), maxRadius=int(w/2)) 
-            stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=150, param2=20, minRadius=int(w/6), maxRadius=int(w/2)) 
+            stringent_circles = cv2.HoughCircles(r , cv2.HOUGH_GRADIENT, 1, int(w), param1=150, param2=30, minRadius=int(w/6), maxRadius=int(w/2)) 
             if stringent_circles is not None and detected == False:
                 # ser.write('s')
                 tcp_send('s')

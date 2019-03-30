@@ -3,7 +3,7 @@ import cv2
 import socket
 import rover_core
 
-UDP_IP = "192.168.43.32"
+UDP_IP = "192.168.43.130"
 # UDP_IP = '127.0.0.1'
 UDP_PORT = 5005
 
@@ -14,7 +14,12 @@ sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 comm_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 TCP_IP = UDP_IP
 TCP_PORT = 1234
-comm_sock.connect((TCP_IP, TCP_PORT))
+while True:
+    try:
+        comm_sock.connect((TCP_IP, TCP_PORT))
+        break
+    except socket.error:
+        TCP_PORT += 1
 ##########################################
 
 
