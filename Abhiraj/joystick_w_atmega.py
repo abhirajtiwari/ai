@@ -52,24 +52,37 @@ try:
         print x_joy, y_joy, gear
 
         #######UDIT'S MASKING#######
-        # sending x
+        gear_bit0 = (0b00000001 & gear) << 5
+        gear_bit1 = (0b00000010 & gear) << 4
+        gear_bit2 = (0b00000100 & gear) << 3
+        gear_bit3 = (0b00001000 & gear) << 2
+
+        # print x_joy, y_joy, gear, gear_bit3>>5, gear_bit2>>5, gear_bit1>>5, gear_bit0>>5
+        # make x
         tenbit2 = x_joy >> 5
         tenbit2 |= 0b11000000
-        ser.write(chr(tenbit2))
+        tenbit2 |= gear_bit1
 
         tenbit1 = x_joy & 0b00011111
         tenbit1 |= 0b10000000
-        ser.write(chr(tenbit1))
+        tenbit1 |= gear_bit0
 
-        # sending y
+        # make y
         tenbit4 = y_joy >> 5
         tenbit4 |= 0b00000000
-        ser.write(chr(tenbit4))
+        tenbit4 |= gear_bit3
 
         tenbit3 = y_joy & 0b00011111
         tenbit3 |= 0b01000000
+        tenbit3 |= gear_bit2
+
+        # send all
+        ser.write(chr(tenbit1))
+        ser.write(chr(tenbit2))
         ser.write(chr(tenbit3))
-        # print '{0:b}'.format(tenbit2), '{0:b}'.format(tenbit1), '{0:b}'.format(tenbit4), '{0:b}'.format(tenbit3)
+        ser.write(chr(tenbit4))
+
+        print '{0:x}'.format(tenbit1), '{0:x}'.format(tenbit2), '{0:x}'.format(tenbit3), '{0:x}'.format(tenbit4)
         ###########################
 
         # ######PARTHIVI'S MASKING######
