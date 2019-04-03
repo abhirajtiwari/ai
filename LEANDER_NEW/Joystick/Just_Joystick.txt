@@ -20,7 +20,7 @@ while 1:
 	for e in pygame.event.get(): # iterate over event stack
                 if e.type == pygame.locals.JOYAXISMOTION:
                     x ,y =  j.get_axis(0) ,j.get_axis(1)
-                    arduino_map(x, -1, 1, 0, 1024)
-                    arduino_map(y, -1, 1, 0, 1024)
+                    x= np.round(arduino_map(x, -1, 1, 0, 1024))
+                    y= np.round(arduino_map(y, 1, -1, 0, 1024))
                     print("X=",x)
                     print("Y=",y)
