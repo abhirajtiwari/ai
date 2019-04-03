@@ -1,6 +1,9 @@
 import pygame
+
 import serial
 import time
+
+print 'Joystick with ATmega'
 
 pygame.init()
 pygame.joystick.init()
@@ -13,7 +16,7 @@ ser = serial.Serial('/dev/ttyUSB0', 38400)
 
 
 try:
-    numgears = 5
+    numgears = 4
     x_joy = 0
     y_joy = 0
     gear= 0
@@ -47,7 +50,7 @@ try:
         x_joy = max(min(1023, x_joy), 0)
         y_joy = max(min(1023, y_joy), 0)
 
-        gear = int(abs((gear * (numgears/2)) - (numgears/2)))
+        gear = int(((-gear+1)/2)*(numgears-1)) + 1
 
         print x_joy, y_joy, gear
 
