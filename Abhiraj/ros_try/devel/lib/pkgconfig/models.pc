@@ -1,0 +1,8 @@
+prefix=/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel
+
+Name: models
+Description: Description of models
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel/lib 
+Requires: 

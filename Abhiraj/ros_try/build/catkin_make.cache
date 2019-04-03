@@ -1,0 +1,2 @@
+beginner_tutorials:models
+-DCATKIN_DEVEL_PREFIX=/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel -DCMAKE_INSTALL_PREFIX=/home/abhiraj/MRM/ai/Abhiraj/ros_try/install -G Unix Makefiles
