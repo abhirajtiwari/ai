@@ -1,7 +1,8 @@
 import pygame
-
+import subprocess
 import serial
 import time
+import threading
 
 print 'Joystick with ATmega'
 
@@ -13,18 +14,42 @@ joy.init()
 
 #Udit's baudrate 38400
 ser = serial.Serial('/dev/ttyUSB0', 38400)
+check_running = True
+numgears = 4
+x_joy = 0
+y_joy = 0
+gear= 0
+x_joy_last = 512
+y_joy_last = 512
+gear_last = 0
+addx = 512
+addy = 512
+reconnected = False
 
+def check_joy():
+    global check_running, x_joy, x_joy_last, y_joy, y_joy_last, reconnected, joy
+    while check_running == True:
+        present = False
+        cmd = "lsusb | grep -o ThrustMaster"
+        ps = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        output = ps.communicate()[0]
+        if output == 'ThrustMaster\n':
+            present = True
+        if present == False:
+            print 'Joystick disconnected'
+            reconnected = True
+            y_joy = x_joy = x_joy_last = y_joy_last= 0
+        if reconnected == True and present == True:
+            pygame.joystick.quit()
+            pygame.joystick.init()
+            joy = pygame.joystick.Joystick(0)
+            joy.init()
+            reconnected = False
 
 try:
-    numgears = 4
-    x_joy = 0
-    y_joy = 0
-    gear= 0
-    x_joy_last = 0
-    y_joy_last = 0
-    gear_last = 0
-    addx = 512
-    addy = 512
+    check_thread = threading.Thread(target=check_joy, args=())
+    check_thread.start()
+
     while True:
         # time.sleep(0.01) #WHY?????? DOES THIS MAKE IT SMOOTH
         x_joy = x_joy_last 
@@ -54,7 +79,6 @@ try:
 
         print x_joy, y_joy, gear
 
-        #######UDIT'S MASKING#######
         gear_bit0 = (0b00000001 & gear) << 5
         gear_bit1 = (0b00000010 & gear) << 4
         gear_bit2 = (0b00000100 & gear) << 3
@@ -85,32 +109,11 @@ try:
         ser.write(chr(tenbit3))
         ser.write(chr(tenbit4))
 
-        print '{0:x}'.format(tenbit1), '{0:x}'.format(tenbit2), '{0:x}'.format(tenbit3), '{0:x}'.format(tenbit4)
-        ###########################
-
-        # ######PARTHIVI'S MASKING######
-        # # sending x
-        # joyval = x_joy
-        # v1 = (joyval & 0b0000111111) << 2
-        # joyval=x_joy>>6
-        # v2=joyval<<2
-        # x1 = (v1 | 0b00000000)
-        # x2 = (v2 | 0b00000001)
-        # ser.write(chr(x1))
-        # ser.write(chr(x2))
-        #
-        # #sending y
-        # joyval = y_joy
-        # v1 = (joyval & 0b0000111111) << 2
-        # joyval=y_joy>>6
-        # v2=joyval<<2
-        # y1=v1 | 0b00000010
-        # y2=v2 | 0b00000011
-        # ser.write(chr(y1))
-        # ser.write(chr(y2))
-        # #############################
+        # print '{0:x}'.format(tenbit1), '{0:x}'.format(tenbit2), '{0:x}'.format(tenbit3), '{0:x}'.format(tenbit4)
 
 except KeyboardInterrupt:
+    check_running = False
+    check_thread.join()
     pass
 
 print 'Exiting joystick...'
