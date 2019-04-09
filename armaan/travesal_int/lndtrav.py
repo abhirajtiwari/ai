@@ -50,9 +50,9 @@ max_y=0
 min_z=0
 max_z=0
 
-l=360-0
-x_manual=0.1305
-y_manual=1.0655
+l=360-180
+x_manual=2.686
+y_manual=0.255
 
 lat2 =  13.3478
 lon2 =  74.79223

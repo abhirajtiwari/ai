@@ -1,30 +1,26 @@
 import time
 import cv2
 import socket
-import RPi.GPIO as GPIO
-import system
+#import RPi.GPIO as GPIO
 import serial
 #put IP of reciever 
-GPIO.setmode(GPIO.BCM)
-UDP_IP = '192.168.43.138'
+
+UDP_IP = ''
 UDP_PORT = 5005
 port=12344
-ser=serial.Serial('/dev/serial0')
-ser.baudrate=38400
+#ser=serial.Serial('/dev/serial0')
+#ser.baudrate=38400
 cap = cv2.VideoCapture(0)
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-a=GPIO.PWM(lspeed,100)
-c=GPIO.PWM(rspeed,100)
-a.start(50)
-c.start(50)
+
 ack='c'
 def right():
     #GPIO.output(ldir,1)	
     #GPIO.output(rdir,0)
-    ser.write(chr(6))
+    ser.write(chr(3))
     return
-
-try: 
+s=socket.socket()
+try:
 	while(True):
 
 		s=socket.socket()
@@ -47,11 +43,11 @@ try:
 		
 		
 		s.close()
-except:
-	
-	s.close()
-	sock.close()
 
-	
+except KeyboardInterrupt:
+	sock.close()
+	s.close()
+sock.close()
+s.close()	
 cap.release()
 cv2.destroyAllWindows()

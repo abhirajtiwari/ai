@@ -1,8 +1,8 @@
 import socket
 import numpy as np
-import cv2.cv as cv
-import time
 import cv2
+import time
+
 #server 
 
 UDP_IP = ''
@@ -20,8 +20,13 @@ vmin=6
 hmax=64
 smax=255
 vmax=255
-
-
+def adjust_gamma(image, gamma=1.0):
+    if gamma == 0:
+        gamma = 0.01
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255
+                      for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
 try:
 	while True:
 	    conn,addr=s.accept()
@@ -33,6 +38,7 @@ try:
 	    #print('frame is',len(frame))
 	    frame = np.transpose(frame)
 	    frame = cv2.imdecode(frame, 1)
+	    #frame= adjust_gammma(frame,0.15)	
 	    blur=cv2.GaussianBlur(frame,(5,5),0)
 	    
 	    hsv=cv2.cvtColor(blur,cv2.COLOR_BGR2HSV)
@@ -60,7 +66,7 @@ try:
 	    prev=0
 	    curr=0
 	    	
-	    contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+	    _,contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 	    update=[] 
 	    if len(contours)!=0:
 	       		for i in contours:
@@ -78,6 +84,7 @@ try:
 	     			#c= max(update, key = cv2.contourArea)
 		     		x,y,w,h = cv2.boundingRect(i)
 		     		moments=cv2.moments(i)
+				area=cv2.contourArea(i)
 		     		cx = int(moments['m10']/moments['m00'])
 		     		cy = int(moments['m01']/moments['m00'])
 		     
@@ -113,7 +120,7 @@ try:
 
 				      #print(roi)  
 				      #roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-					circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=200,param2=13 ,minRadius=int(w/3),maxRadius=int(w/2))
+					circles=cv2.HoughCircles(roi,cv2.HOUGH_GRADIENT,1,200,param1=200,param2=13 ,minRadius=int(w/3),maxRadius=int(w/2))
 					cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)  
 					cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2-xrange1,y+yrange),(0,255,0),2)
 					cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2+xrange1,y+yrange),(0,255,0),2)
@@ -129,7 +136,12 @@ try:
 								xop=xc
 								yop=yc
 							prev=curr
-					 
+						circleratio=area/(np.pi*maxval*maxval)
+		  
+		  				print area,np.pi*maxval*maxval,circleratio
+		  				#compare areas
+		  				if circleratio<0.5:
+							continue					 
 		 	  			if abs(cx-(x+xop))>8 or abs(cx-(x+xop))>8:
 							continue
 						print "ball"
@@ -150,7 +162,8 @@ try:
 	    if cv2.waitKey(1) & 0xFF == ord ('q'):
 			break
 	    conn.close()
-except:
-	conn.close()
+except KeyboardInterrupt:
+	#conn.close()
 	s.close()
-	sock.close()
+conn.close()
+s.close()
