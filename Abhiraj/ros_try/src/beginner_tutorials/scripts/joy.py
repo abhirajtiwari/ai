@@ -11,7 +11,7 @@ joy = pygame.joystick.Joystick(0)
 joy.init()
 
 rospy.init_node('joy', anonymous=True)
-pub = rospy.Publisher('ddrobot/cmd_vel', Twist, queue_size=10)
+pub = rospy.Publisher('ib/cmd_vel', Twist, queue_size=10)
 
 try:
     numgears = 5
@@ -50,7 +50,7 @@ try:
         data.linear.x = y_joy*gear
         data.linear.y = data.linear.z = 0
         data.angular.x = data.angular.y = 0
-        data.angular.z = -x_joy*gear
+        data.angular.z = x_joy*gear
         rospy.loginfo(data)
         rospy.loginfo(gear)
         pub.publish(data)
