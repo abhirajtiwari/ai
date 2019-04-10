@@ -5,9 +5,10 @@ import socket
 # socket.setdefaulttimeout(0.033)
 
 port = 1234
-server = '127.0.0.1'
+# server = '127.0.0.1'
 # server = '10.57.0.62'
-# server = '192.168.43.61'
+server = '192.168.43.254'
+
 # factor = 4
 # l = int(640/factor)
 # b = int(480/factor)
@@ -16,9 +17,15 @@ server = '127.0.0.1'
 
 def getCameraFrame():
     try:
+        global port
         data = ''
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((server, port))
+        while True:
+            try: 
+                sock.connect((server, port))
+                break
+            except socket.error:
+                port+=1
         size = int(sock.recv(7))
         while len(data) < size:
             data += sock.recv(int(1e7))
@@ -73,7 +80,11 @@ if __name__ == '__main__':
         #     sock.close()
         # except socket.timeout:
         #     pass
-        cv.imshow('frame', getCameraFrame())
+
+        factor = 1.5
+        frame = getCameraFrame()
+        frame = cv.resize(frame, (int(640/factor), int(480/factor)))
+        cv.imshow('frame', frame)
         key = cv.waitKey(1)
         if key == ord('q'):
             break

@@ -5,7 +5,6 @@ import socket
 
 cap = cv.VideoCapture(0)
 # fps = int(cap.get(cv.CAP_PROP_FPS))
-fps = 30
 
 #socket.setdefaulttimeout(0.100)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,7 +15,13 @@ host = socket.gethostname()
 port = 1234
 factor = 2
 
-sock.bind(('', port))
+while True:
+    try:
+        sock.bind(('', port))
+        print 'Port at ', port
+        break
+    except socket.error:
+        port += 1
 
 sock.listen(5)
 
@@ -24,11 +29,11 @@ sock.listen(5)
 
 while True:
     _, frame = cap.read()
-    _, encoded = cv.imencode('.jpg', frame)
+    b, l, ch = frame.shape 
+    frame = cv.resize(frame, (int(l/factor), int(b/factor)))
+    _, encoded = cv.imencode('.jpg', frame, [cv.IMWRITE_JPEG_QUALITY, 30])
     length = len(encoded)
     string_encoded = encoded.tostring()
-    # b, l, ch = frame.shape 
-    # frame = cv.resize(frame, (int(l/factor), int(b/factor)))
     if frame is not None:
         try:
             # data =frame.flatten('F').tostring()
@@ -49,7 +54,7 @@ while True:
                 continue
             # time.sleep(1./fps)
             c.close()
-            print 'wrote'
+            print 'wrote', length
 
         except socket.error:
             pass
