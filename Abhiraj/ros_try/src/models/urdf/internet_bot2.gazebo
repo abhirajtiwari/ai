@@ -345,7 +345,6 @@
 <plugin name="magnetometer" filename="libhector_gazebo_ros_magnetic.so">
     <updateRate>10.0</updateRate>
     <bodyName>base_link</bodyName>
-    <frameId>base_link</frameId>
     <topicName>magnetic</topicName>
     <offset>0 0 0</offset>
     <drift>0.0 0.0 0.0</drift>
