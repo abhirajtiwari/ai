@@ -25,6 +25,7 @@ gear_last = 0
 addx = 512
 addy = 512
 reconnected = False
+idle = False
 
 def check_joy():
     global check_running, x_joy, x_joy_last, y_joy, y_joy_last, reconnected, joy
@@ -63,7 +64,13 @@ try:
                     y_joy = event.value*-512
                 elif event.axis == 3:
                     gear = event.value
+            elif event.type == pygame.JOYBUTTONDOWN:
+                if joy.get_button(2):
+                    idle = not idle
 
+        if idle == True:
+            print 'idle'
+            x_joy = y_joy = x_joy_last = y_joy_last = 0
         x_joy_last = x_joy
         y_joy_last = y_joy
         gear_last = gear
