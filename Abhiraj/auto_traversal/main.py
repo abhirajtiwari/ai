@@ -14,16 +14,22 @@ def manual():
     global cam_pid
     global joy_pid
     try:
-        cam_pid = subprocess.Popen(['konsole', '-e', 'python', '/home/abhiraj/Mars Rover Manipal/ai/Abhiraj/client_encoded.py']).pid 
+        cam_pid = subprocess.Popen(['konsole', '-e', 'python', '/home/abhiraj/MRM/ai/Abhiraj/socket_camera/client_encoded.py']).pid 
         print 'Started camera'
     except:
         print 'Unable to start camera'
 
     try:
-        joy_pid = subprocess.Popen(['konsole', '-e', 'python', '/home/abhiraj/Mars Rover Manipal/ai/Abhiraj/joystick_w_atmega.py']).pid
+        joy_pid = subprocess.Popen(['konsole', '-e', 'python', '/home/abhiraj/MRM/ai/Abhiraj/joystick_w_atmega.py']).pid
+        print 'Started joystick'
     except:
         print 'Unable to start joystick'
-    print 'Started joystick'
+
+    try:
+        bm_pid = subprocess.Popen(['konsole', '-e', 'python', '/home/abhiraj/MRM/ai/Abhiraj/battery_data/battery_monitoring.py']).pid
+        print 'Started Battery Monitor'
+    except:
+        print 'Unable to start battery monitor'
 
     char = raw_input("Press 'e' to exit | Press 'a' for auto...\n")
     return char
@@ -33,6 +39,7 @@ while True:
     if char == 'e':
         os.kill(int(cam_pid), signal.SIGINT)
         os.kill(int(joy_pid), signal.SIGINT)
+        os.kill(int(bm_pid), signal.SIGINT)
         break
     elif char == 'a':
         os.kill(int(joy_pid), signal.SIGINT)
