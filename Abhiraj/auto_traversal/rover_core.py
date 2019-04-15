@@ -29,6 +29,8 @@ import justimu
 # triggerls = 26
 # echols = 19
 
+forward_sleep = 5
+
 def convertPWMtoDC(speed):
     return (speed/255.) * 100.
 
@@ -87,7 +89,7 @@ def right90(speed):
         right0(speed)
         curr_head = justimu.getHead()
     forward(speed)
-    time.sleep(1)
+    time.sleep(forward_sleep)
 
 def left90(speed):
     curr_head = justimu.getHead()
@@ -96,7 +98,7 @@ def left90(speed):
         left0(speed)
         curr_head = justimu.getHead()
     forward(speed)
-    time.sleep(1)
+    time.sleep(forward_sleep)
 
 def uturn(speed):
     print 'uturn'

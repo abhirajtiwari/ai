@@ -62,7 +62,7 @@ try:
                 print r_head
 
                 #check if the gate is complete 
-                if dist < 2.5:
+                if dist < 2:
                     print 'reached'
                     gate[2] = True
 

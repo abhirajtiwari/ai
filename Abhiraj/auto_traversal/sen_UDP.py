@@ -3,7 +3,7 @@ import cv2
 import socket
 import rover_core
 
-UDP_IP = "192.168.43.130"
+UDP_IP = "192.168.43.32"
 # UDP_IP = '127.0.0.1'
 UDP_PORT = 5005
 

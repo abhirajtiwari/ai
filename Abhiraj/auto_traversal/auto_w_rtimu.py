@@ -1,15 +1,14 @@
 import time
-import subprocess
 import rover_connections
 from rover_connections import *
 import numpy as np
-#import rtimulsm
+import rtimulsm
 import math
 from math import sin, cos, acos
 from gps3.agps3threaded import AGPS3mechanism
 import ultrasonic
 import rover_core
-import justimu
+#import justimu
 
 
 gps_thread = AGPS3mechanism()
@@ -25,10 +24,6 @@ allow_right = True
 allow_forward = True
 
 speed = 128
-
-countls = countlf = countrf = countrs = 0
-
-confidence = 10
 
 try:
     #get gates
@@ -57,8 +52,8 @@ try:
                 head += 360
 
             #get rover heading
-            #r_head = rtimulsm.getHeading() #rtimulsm
-            r_head = justimu.getHead() ###LEANDER's CODE
+            r_head = rtimulsm.getHeading() #rtimulsm
+            #r_head = justimu.getHead() ###LEANDER's CODE
             if r_head is None:
                 r_head = last_head 
             last_head = r_head
@@ -66,7 +61,7 @@ try:
             print r_head
 
             #check if the gate is complete 
-            if dist < 2:
+            if dist < 2.5:
                 print 'reached'
                 gate[2] = True
 
@@ -89,23 +84,20 @@ try:
             us_rightf = ultrasonic.getDistance(echorf, triggerrf)
             us_lefts = ultrasonic.getDistance(echols, triggerls)
             us_rights = ultrasonic.getDistance(echors, triggerrs)
+            
             '''us_leftf = 300
             us_rightf = 300
             us_lefts = 300
             us_rights = 300'''
 
-            if us_lefts < side_thresh:#and countls == confidence:
-                countls = 0
+            if us_lefts < side_thresh:
                 allow_left = False
             else:
-                countls += 1
                 allow_left = True
 
-            if us_rights < side_thresh:# and countrs == confidence:
-                countrs = 0
+            if us_rights < side_thresh:
                 allow_right = False
             else:
-                countrs += 1
                 allow_right = True
 
             if us_leftf < front_thresh or us_rightf < front_thresh:
@@ -114,23 +106,15 @@ try:
                 allow_forward = True
 
             # conditions where us is priority
-            if us_leftf < front_thresh and us_rightf > front_thresh and countlf == confidence:#and rotate_by == 0:
-                countlf = 0
+            if us_leftf < front_thresh and us_rightf > front_thresh:#and rotate_by == 0:
                 rover_core.right90(speed)
                 continue
-            elif us_leftf > front_thresh and us_rightf < front_thresh and countrf == confidence:# and rotate_by == 0:
-                countrf = 0
+            elif us_leftf > front_thresh and us_rightf < front_thresh:# and rotate_by == 0:
                 rover_core.left90(speed)
                 continue
-            elif  us_leftf < front_thresh and us_rightf < front_thresh and (countrf == confidence and countlf == confidence):
-                countrf = countlf = 0
+            elif  us_leftf < front_thresh and us_rightf < front_thresh:
                 rover_core.uturn(speed)
                 continue
-            else:
-                if us_leftf < front_thresh:
-                    countlf += 1 
-                if us_rightf < front_thresh:
-                    countrf += 1
 
             #Magneto conditions
             if rotate_by < 15 and rotate_by > -15:
@@ -146,9 +130,6 @@ try:
             else:
                 rover_core.forward(speed)
 
-        print "Gate {} reached.\n".format(i)
-        rover_core.stop()
-        subprocess.Popen(['python', 'sen_UDP.py']).wait()
         print "Gate {} completed.\n".format(i)
         resp = raw_input("Proceed for next gate [n], switch to manual [m]: ")
         if resp != 'n' and resp != 'm':
@@ -157,6 +138,5 @@ try:
 except KeyboardInterrupt:
     gpio.cleanup()
 
-rover_core.stop()
 gpio.cleanup()
 print 'Finished auto, Exiting...'

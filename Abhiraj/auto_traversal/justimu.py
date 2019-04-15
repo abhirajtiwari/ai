@@ -10,10 +10,17 @@ max_y=0
 min_z=0
 max_z=0
 
-l=360-179
-x_manual=1.6575
-y_manual=2.424
+l=360-180
+'''
+('X OFFSET:', 1.9555)
+('Y OFFSET:', 0.7795000000000001)
 
+28 thursday
+('X OFFSET:', 0.13050000000000006)
+('Y OFFSET:', 1.0655000000000001)
+'''
+x_manual=1.6635
+y_manual=0.8835
 
 bus = smbus.SMBus(1)
 

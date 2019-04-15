@@ -1,5 +1,6 @@
 import RPi.GPIO as gpio
 import time
+from rover_connections import *
 
 # gpio.setmode(gpio.BCM)
 
@@ -38,8 +39,8 @@ def getDistance(pinEcho, pinTrigger):
 
 if __name__ == '__main__':
     gpio.setmode(gpio.BCM)
-    trig = 26
-    echo = 19
+    trig = triggerrs
+    echo = echors
 
     gpio.setup(echo, gpio.IN)
     gpio.setup(trig, gpio.OUT)

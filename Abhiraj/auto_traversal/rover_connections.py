@@ -1,7 +1,7 @@
 import RPi.GPIO as gpio
 import serial
 
-atser = serial.Serial('/dev/serial0', 38400)
+atser = serial.Serial('/dev/serial0', 9600)
 
 gpio.setmode(gpio.BCM)
 
@@ -25,8 +25,8 @@ rpwm.start(0)
 '''
 
 ###ULTRASONICS###
-side_thresh = 30
-front_thresh = 30
+side_thresh = 40
+front_thresh = 40
 
 triggerrf = 8
 echorf = 25
