@@ -10,5 +10,7 @@
 </include>
 <!-- Spawn dd_robot into Gazebo -->
 <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(find models)/urdf/internet_bot2.gazebo -urdf -model ibot" />
+<node name="gpsmag" pkg="beginner_tutorials" type="gpsmag.py"/>
+<node name="obs_laser" pkg="beginner_tutorials" type="obs_laser.py"/>
 </launch>
 

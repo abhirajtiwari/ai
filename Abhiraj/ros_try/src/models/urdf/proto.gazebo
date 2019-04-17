@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<robot name="proto">
+<link name="chassis">
+	<visual>
+	<origin xyz="0 0 0" rpy="0 0 0" />
+	<geometry>
+		<mesh filename="package://models/meshes/whl_bin.stl"/>
+	</geometry>
+	</visual>
+	<collision>
+		<geometry>
+			<box size="0.6 0.5 0.1"/>
+		</geometry>
+	</collision>
+</link>
+
+</robot>

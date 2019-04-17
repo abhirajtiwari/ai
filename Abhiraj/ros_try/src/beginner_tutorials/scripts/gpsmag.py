@@ -57,10 +57,10 @@ def do():
         move_command.angular.z = 0
     elif turn_direction == True:
         move_command.linear.x = 0
-        move_command.angular.z = 0.5
+        move_command.angular.z = 0.2
     elif turn_direction == False:
         move_command.linear.x = 0
-        move_command.angular.z = -0.5
+        move_command.angular.z = -0.2
     if reached == True:
         move_command.linear.x = 0
         move_command.angular.z = 0
