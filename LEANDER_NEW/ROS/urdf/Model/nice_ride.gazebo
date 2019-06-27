@@ -700,7 +700,7 @@
 
 <joint name="camera_front_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin rpy="0 0 0" xyz="0.395 0 0.155" />
+    <origin rpy="0 0 0" xyz="0.405 0 0.145" />
     <parent link="base_link"/>
     <child link="base_camera_front"/>
 </joint>
