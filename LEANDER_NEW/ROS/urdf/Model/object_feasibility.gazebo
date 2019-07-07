@@ -14,6 +14,7 @@
           <box size="0.8 0.6 0.1"/>
              <origin xyz="0 0 0.1"/>
         </geometry>
+	
  </collision>
 
   <visual>
@@ -29,6 +30,461 @@
     <material>Gazebo/Blue</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
+
+<!--HOLDER 1-->
+<link name="holder1">
+
+        <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+        <box size="0.02 0.02 0.45"/>
+      </geometry>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+   	<material name="black"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+        <box size="0.02 0.02 0.45"/>
+      </geometry>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<material name="black"/>
+
+    </visual>
+</link>
+
+<gazebo reference="holder1">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>false</turnGravityOff>
+</gazebo>
+
+<joint name="holder1_joint" type="fixed">
+    <axis xyz="0 1 0" />
+
+    <origin rpy="0 0 0" xyz="0.39 0.26 0.375" />
+    <parent link="base_link"/>
+    <child link="holder1"/>
+</joint>
+
+<!--HOLDER 2-->
+<link name="holder2">
+
+        <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+         <box size="0.02 0.02 0.45"/>
+      </geometry>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+   	<material name="black"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+         <box size="0.02 0.02 0.45"/>
+      </geometry>
+	<origin xyz="0 0 0" rpy="0 0 0"/>
+	<material name="black"/>
+
+    </visual>
+</link>
+
+<gazebo reference="holder2">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>false</turnGravityOff>
+</gazebo>
+
+<joint name="holder2_joint" type="fixed">
+    <axis xyz="0 1 0" />
+   <origin rpy="0 0 0" xyz="0.39 -0.26 0.375" />
+    <parent link="base_link"/>
+    <child link="holder2"/>
+</joint>
+
+<!--SQUARE PALATE-->
+
+ <link name="square">
+
+     <inertial>
+          <mass value="1"/>
+        <inertia ixx="0.145833" ixy="0" ixz="0" iyy="0.145833" iyz="0" izz="0.125"/>
+</inertial>
+
+<collision name='collision'>
+         <geometry>
+          <box size="0.02 0.5 0.5"/>
+        </geometry>
+        <origin rpy="0 0.78535 0" xyz="0 0 0"/>
+	 <material name="green"/>
+ </collision>
+
+
+    <visual>
+         <geometry>
+          <box size="0.02 0.5 0.5"/>
+        </geometry>
+      <origin rpy="0 0.78535 0" xyz="0 0 0"/>
+	 <material name="green"/>
+    </visual>
+  </link>
+    <gazebo reference="square">
+    <material>Gazebo/Green</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <joint name="base_to_square" type="fixed">
+    <parent link="base_link"/>
+    <child link="square"/>
+   <origin rpy="0 0 0" xyz="0.39 0 0.6" />
+      <axis xyz="0 1 0"/>
+
+      <calibration rising="0.0"/>
+      <dynamics damping="0.0" friction="0.0"/>
+
+  </joint>
+<!--.....................PSD1L...........-->
+
+<link name="psd1l">
+
+  <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+   	<material name="yellow"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<material name="yellow"/>
+
+    </visual>
+
+</link>
+
+<gazebo reference="psd1l">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+<joint name="psd1l_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0.78535 0" xyz="0.1432 -0.1875 0.122" />  
+    <parent link="square"/>
+    <child link="psd1l"/>
+</joint>
+
+
+<!--  ........................................SENSOR PLUGIN.....................................-->
+<gazebo reference="psd1l">
+   <sensor type="ray" name="TeraRanger">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>50</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </vertical>
+         </scan>
+         <range>
+            <min>0.02</min>
+            <max>4</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range5">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>50</updateRate>
+         <topicName>psd1l_topic</topicName>
+         <frameName>psd1l</frameName>
+         <radiation>ultrasound</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>
+   </gazebo>
+
+<!--.....................PSD1R...........-->
+
+<link name="psd1r">
+
+  <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+   	<material name="yellow"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<material name="yellow"/>
+
+    </visual>
+
+</link>
+
+<gazebo reference="psd1r">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+<joint name="psd1r_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0.78535 0" xyz="0.1432 0.1875 0.122" />
+    <parent link="square"/>
+    <child link="psd1r"/>
+</joint>
+
+
+<!--  ........................................SENSOR PLUGIN.....................................-->
+<gazebo reference="psd1r">
+   <sensor type="ray" name="TeraRanger">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>50</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </vertical>
+         </scan>
+         <range>
+            <min>0.02</min>
+            <max>4</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range6">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>50</updateRate>
+         <topicName>psd1r_topic</topicName>
+         <frameName>psd1r</frameName>
+         <radiation>ultrasound</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>
+   </gazebo>
+
+
+<!--.....................PSD2L...........-->
+
+<link name="psd2l">
+
+  <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+   	<material name="yellow"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<material name="yellow"/>
+
+    </visual>
+
+</link>
+
+<gazebo reference="psd2l">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+<joint name="psd2l_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0.78535 0" xyz="0.0106 -0.1875 -0.0106" /> 
+    <parent link="square"/>
+    <child link="psd2l"/>
+</joint>
+
+
+<!--  ........................................SENSOR PLUGIN.....................................-->
+<gazebo reference="psd2l">
+   <sensor type="ray" name="TeraRanger">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>50</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </vertical>
+         </scan>
+         <range>
+            <min>0.02</min>
+            <max>4</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range7">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>50</updateRate>
+         <topicName>psd2l_topic</topicName>
+         <frameName>psd2l</frameName>
+         <radiation>ultrasound</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>
+   </gazebo>
+
+<!--.....................PSD2R...........-->
+
+<link name="psd2r">
+
+  <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+
+    <collision name='collision'>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+   	<material name="yellow"/>
+    </collision>
+
+    <visual>
+
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+	<material name="yellow"/>
+
+    </visual>
+
+</link>
+
+<gazebo reference="psd2r">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+<joint name="psd2r_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0.78535 0" xyz="0.0106 0.1875 -0.0106" />
+    <parent link="square"/>
+    <child link="psd2r"/>
+</joint>
+<!--  ........................................SENSOR PLUGIN.....................................-->
+<gazebo reference="psd2r">
+   <sensor type="ray" name="TeraRanger">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>50</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>10</samples>
+               <resolution>1</resolution>
+               <min_angle>-0.2618</min_angle>
+               <max_angle>0.2618</max_angle>
+            </vertical>
+         </scan>
+         <range>
+            <min>0.02</min>
+            <max>4</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range8">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>50</updateRate>
+         <topicName>psd2r_topic</topicName>
+         <frameName>psd2r</frameName>
+         <radiation>ultrasound</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>
+   </gazebo>
 
 <!--RIGHT WHEEL-->
 
@@ -195,358 +651,6 @@
 
   </joint>
 
-<!--.....................................SONAR SENSOR 1............................................-->
-
-
-<link name="base_sonar1_front">
-
-  <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-
-    <collision name='collision'>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-   	<material name="yellow"/>
-    </collision>
-
-    <visual>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-	<material name="yellow"/>
-
-    </visual>
-
-
-
-</link>
-
-<gazebo reference="base_sonar1_front">
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-
-<joint name="sonar1_front_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin rpy="0 0 0" xyz="0.405 0.2 0.1" />
-    <parent link="base_link"/>
-    <child link="base_sonar1_front"/>
-</joint>
-
-<!--  ........................................SENSOR PLUGIN.....................................-->
-<gazebo reference="base_sonar1_front">
-   <sensor type="ray" name="TeraRanger">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
-      <update_rate>50</update_rate>
-      <ray>
-         <scan>
-            <horizontal>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </horizontal>
-            <vertical>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </vertical>
-         </scan>
-         <range>
-            <min>0.02</min>
-            <max>4</max>
-            <resolution>0.02</resolution>
-         </range>
-      </ray>
-      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range1">
-         <gaussianNoise>0.005</gaussianNoise>
-         <alwaysOn>true</alwaysOn>
-         <updateRate>50</updateRate>
-         <topicName>champ1</topicName>
-         <frameName>base_sonar1_front</frameName>
-         <radiation>ultrasound</radiation>
-         <fov>0.2967</fov>
-      </plugin>
-   </sensor>
-   </gazebo>
-
-
-<!--................................................................................................-->
-
-
-<!--.....................................SONAR SENSOR 2............................................-->
-
-
-<link name="base_sonar2_front">
-
-  <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-
-    <collision name='collision'>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-   	<material name="yellow"/>
-    </collision>
-
-    <visual>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-	<material name="yellow"/>
-
-    </visual>
-
-
-
-</link>
-
-<gazebo reference="base_sonar2_front">
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-
-<joint name="sonar2_front_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin rpy="0 0 0" xyz="0.405 -0.2 0.1" />
-    <parent link="base_link"/>
-    <child link="base_sonar2_front"/>
-</joint>
-
-<!--.........................................SENSOR PLUGIN........................................-->
-<gazebo reference="base_sonar2_front">
-   <sensor type="ray" name="TeraRanger">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
-      <update_rate>50</update_rate>
-      <ray>
-         <scan>
-            <horizontal>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </horizontal>
-            <vertical>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </vertical>
-         </scan>
-         <range>
-            <min>0.02</min>
-            <max>4</max>
-            <resolution>0.02</resolution>
-         </range>
-      </ray>
-      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range2">
-         <gaussianNoise>0.005</gaussianNoise>
-         <alwaysOn>true</alwaysOn>
-         <updateRate>50</updateRate>
-         <topicName>champ2</topicName>
-         <frameName>base_sonar2_front</frameName>
-         <radiation>ultrasound</radiation>
-         <fov>0.2967</fov>
-      </plugin>
-   </sensor>
-   </gazebo>
-
-
-<!--................................................................................................-->
-
-<!--.....................................SONAR SENSOR 3............................................-->
-
-
-<link name="base_sonar3_front">
-
-  <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-
-    <collision name='collision'>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-   	<material name="yellow"/>
-    </collision>
-
-    <visual>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-	<material name="yellow"/>
-
-    </visual>
-
-
-
-</link>
-
-<gazebo reference="base_sonar3_front">
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-
-<joint name="sonar3_front_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin rpy="0 0 -1.5707" xyz="0 -0.305 0.1" />
-    <parent link="base_link"/>
-    <child link="base_sonar3_front"/>
-</joint>
-
-<!--.........................................SENSOR PLUGIN........................................-->
-<gazebo reference="base_sonar3_front">
-   <sensor type="ray" name="TeraRanger">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
-      <update_rate>50</update_rate>
-      <ray>
-         <scan>
-            <horizontal>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </horizontal>
-            <vertical>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </vertical>
-         </scan>
-         <range>
-            <min>0.02</min>
-            <max>4</max>
-            <resolution>0.02</resolution>
-         </range>
-      </ray>
-      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range3">
-         <gaussianNoise>0.005</gaussianNoise>
-         <alwaysOn>true</alwaysOn>
-         <updateRate>50</updateRate>
-         <topicName>champ3</topicName>
-         <frameName>base_sonar3_front</frameName>
-         <radiation>ultrasound</radiation>
-         <fov>0.2967</fov>
-      </plugin>
-   </sensor>
-   </gazebo>
-
-
-<!--................................................................................................-->
-<!--.....................................SONAR SENSOR 4............................................-->
-
-
-<link name="base_sonar4_front">
-
-  <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-
-    <collision name='collision'>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-   	<material name="yellow"/>
-    </collision>
-
-    <visual>
-
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-	<origin xyz="0 0 0" rpy="0 0 0"/>
-	<material name="yellow"/>
-
-    </visual>
-
-
-
-</link>
-
-<gazebo reference="base_sonar4_front">
-    <material>Gazebo/Yellow</material>
-    <turnGravityOff>false</turnGravityOff>
-  </gazebo>
-
-<joint name="sonar4_front_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin rpy="0 0 1.5707" xyz="0 0.305 0.1" />
-    <parent link="base_link"/>
-    <child link="base_sonar4_front"/>
-</joint>
-
-<!--.........................................SENSOR PLUGIN........................................-->
-<gazebo reference="base_sonar4_front">
-   <sensor type="ray" name="TeraRanger">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
-      <update_rate>50</update_rate>
-      <ray>
-         <scan>
-            <horizontal>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </horizontal>
-            <vertical>
-               <samples>10</samples>
-               <resolution>1</resolution>
-               <min_angle>-0.2618</min_angle>
-               <max_angle>0.2618</max_angle>
-            </vertical>
-         </scan>
-         <range>
-            <min>0.02</min>
-            <max>4</max>
-            <resolution>0.02</resolution>
-         </range>
-      </ray>
-      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range4">
-         <gaussianNoise>0.005</gaussianNoise>
-         <alwaysOn>true</alwaysOn>
-         <updateRate>50</updateRate>
-         <topicName>champ4</topicName>
-         <frameName>base_sonar4_front</frameName>
-         <radiation>ultrasound</radiation>
-         <fov>0.2967</fov>
-      </plugin>
-   </sensor>
-   </gazebo>
-
-
-<!--................................................................................................-->
-
 
 
 <!--..............................................IMU SENSOR...........................................-->
@@ -585,7 +689,7 @@
 
 <joint name="imu_front_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin rpy="0 0 0" xyz="0 0 0.155" />
+    <origin rpy="0 0 0" xyz="-0.2 0 0.155" />
     <parent link="base_link"/>
     <child link="base_imu_front"/>
 </joint>
@@ -747,6 +851,7 @@
     </sensor>
   </gazebo>
 
+
 <!--.................................2D LIDAR.......................................-->
 
 <link name="base_lidar_front">
@@ -794,7 +899,7 @@
   <gazebo reference="base_lidar_front">
     <sensor type="ray" name="lidar">
       <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <update_rate>50</update_rate>
       <ray>
          <scan>
@@ -829,7 +934,10 @@
   </gazebo>
 
 
-<!--................................................................................................-->
+
+
+
+<!--.................................DIFFERENTIAL DRIVES..........................................-->
 
 <gazebo>
   <plugin name="differential_drive_controller1" filename="libgazebo_ros_diff_drive.so">
