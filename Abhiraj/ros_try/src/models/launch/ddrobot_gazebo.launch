@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
 <!-- We resume the logic in gazebo_ros package empty_world.launch, changing only the name of the world to be launched -->
 <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -10,7 +11,13 @@
 </include>
 <!-- Spawn dd_robot into Gazebo -->
 <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen" args="-file $(find models)/urdf/internet_bot2.gazebo -urdf -model ibot" />
-<node name="gpsmag" pkg="beginner_tutorials" type="gpsmag.py"/>
-<node name="obs_laser" pkg="beginner_tutorials" type="obs_laser.py"/>
+
+<!-- <node name="gpsmag" pkg="beginner_tutorials" type="gpsmag.py"/>
+<node name="obs_laser" pkg="beginner_tutorials" type="obs_laser.py"/> -->
+
+<node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop">
+    <remap from="cmd_vel" to="ib/cmd_vel"/>
+</node>
+
 </launch>
 

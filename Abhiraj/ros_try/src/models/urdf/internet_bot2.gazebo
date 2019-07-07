@@ -299,9 +299,10 @@
       <wheelTorque>20</wheelTorque>
       <wheelAcceleration>1.8</wheelAcceleration>
       <commandTopic>cmd_vel</commandTopic>
+      <publishOdomTF>0</publishOdomTF>  <!-- DID THIS FOR LOCALIZATION TRIAL -->
       <odometryFrame>odom</odometryFrame>
       <odometryTopic>odom</odometryTopic>
-      <robotBaseFrame>base_link</robotBaseFrame>
+      <!-- <robotBaseFrame>base_link</robotBaseFrame> -->
       <robotNamespace>ib</robotNamespace>
     </plugin>
   </gazebo>
@@ -351,4 +352,14 @@
     <gaussianNoise>1.3e-2 1.3e-2 1.3e-2</gaussianNoise>
 </plugin>
 </gazebo>
+<gazebo>
+    <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>base_link</bodyName>
+      <topicName>imu</topicName>
+      <serviceName>imu_service</serviceName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <updateRate>20.0</updateRate>
+    </plugin>
+  </gazebo>
 </robot>
