@@ -58,6 +58,20 @@ def talker():
                 ob1.angular.z = x1
 
 
+                if count!=0:
+                    toc = time.time()
+                    time_odd = toc-tic
+                    h.write(str(time_odd) + '\n')
+
+                # PUBLISHING BLOCK
+                pub.publish(ob1)
+
+
+
+                tic = time.time()
+
+
+
                 linear_motion = -y1/3
                 f.write(str(linear_motion)+'\n')
 
@@ -65,27 +79,10 @@ def talker():
                 g.write(str(angular_motion) + '\n')
 
 
-                count=count+1
-
-                if count==1:
-                    tic =time.time()
-                    h.write(str(0.0)+'\n')
-
-                elif count%2==0:
-                    toc = time.time()
-                    time_even=toc-tic
-                    h.write(str(time_even) + '\n')
-
-                elif count%2==1:
-                    tic = time.time()
-                    time_odd = tic-toc
-                    h.write(str(time_odd) + '\n')
+                count=1
 
 
-                rospy.loginfo(ob1)
-                pub.publish(ob1)
-
-
+                #rospy.loginfo(ob1)
 
         rate.sleep()
 
@@ -96,4 +93,3 @@ if __name__ == '__main__':
         f.close()
         g.close()
         h.close()
-
