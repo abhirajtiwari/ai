@@ -8,4 +8,5 @@
 	<param name="approximate_sync" value="true"/>
 	<param name="queue_size" value="10"/>
     </node>
+	<node pkg="tf" type="static_transform_publisher" name="rcamera_frame_bdcst" args="0 0 0 -1.5708 0 -1.5708  base_link base_camera_front_L 50" />
 </launch>
