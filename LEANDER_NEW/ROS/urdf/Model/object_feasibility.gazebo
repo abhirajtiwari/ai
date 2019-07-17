@@ -114,7 +114,7 @@
     <child link="holder2"/>
 </joint>
 
-<!--SQUARE PALATE-->
+<!--SQUARE PLATE-->
 
  <link name="square">
 
