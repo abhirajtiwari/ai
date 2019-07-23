@@ -9,8 +9,8 @@ dist_arr=[None]*2
 
 X1_o = 0.6720044681341033
 X2_o = 0.5516100373878208
-X1_T = 0
-X2_T = 0
+X1_T = 1e-6
+X2_T = 1e-6
 
 X1 = 0.0
 X2 = 0.0
@@ -42,6 +42,11 @@ def callback_intel_realsense(data) :
     elif ( ( abs(X1-X1_o)>X1_T  and abs(X2-X2_o)>X2_T ) and (X1 - X1_o -X1_T <X2 - X2_o+X2_T)):
         slope_angle = 90 - alpha - ((180 / pi) * atan((X1 - X2) / L))
         print("UPWARD SLOPE APPROACHING", "SLOPE ANGLE=", slope_angle)
+
+    #DITCH CHECK (NOT WORKING)
+    elif (((X1 - X1_o > X1_T) and (X2 - X2_o > X2_T)) and (abs(X1 - X1_o) - X1_T < abs(X2 - X2_o) + X2_T)):
+        ditch_depth = (X2_o - X2)*sin(pi/2)
+        print("DITCH APPROACHING", "DITCH DEPTH=", ditch_depth)
 
     else:
         print(1)
