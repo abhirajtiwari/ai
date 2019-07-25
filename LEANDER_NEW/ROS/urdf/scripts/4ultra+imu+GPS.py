@@ -150,7 +150,7 @@ distance4 = Range()
 
 heading = 0
 degree = 0
-dist = 0
+dist = 10.0
 
 
 def callback1(msg):
@@ -367,7 +367,8 @@ def listener():
             continue
 
         t = heading - degree
-        if dist<1:
+        if dist<1.0:
+            print("GOAL REACHED")
             brutestop()
             break
 
