@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import cv2.cv as cv	
+import cv2
 
 #import imutils 
 def nothing(x):
@@ -46,7 +46,7 @@ def corrected(x,y,w,h):
 	 
 	
 cap=cv2.VideoCapture(0)
-cv2.namedWindow("para")
+#cv2.namedWindow("para")
 cv2.createTrackbar("Hmin","para",0,255,nothing)
 cv2.createTrackbar("Smin","para",0,255,nothing)
 cv2.createTrackbar("Vmin","para",0,255,nothing)
@@ -106,7 +106,7 @@ while(1):
     prev=0
     curr=0
     
-    contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    _,contours, hierarchy = cv2.findContours(mask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     update=[] 
     if len(contours)!=0:
        for i in contours:
@@ -148,7 +148,7 @@ while(1):
 	     
 	     roi=blur[y:y+yrange,x:x+xrange1]
 	     	
-	     cv2.imshow('maskasas',roi_left)
+	     #cv2.imshow('maskasas',roi_left)
 	     roi=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
 	     #cv2.imshow('roi',roi)
 	     if len(roi)!=0:
@@ -159,8 +159,8 @@ while(1):
 
 	      #print(roi)  
 	      #roi_gray=cv2.cvtColor(roi,cv2.COLOR_BGR2GRAY)
-	      circles=cv2.HoughCircles(roi,cv.CV_HOUGH_GRADIENT,1,200,param1=200,param2=13,minRadius=int(w/3),maxRadius=int(w/2))
-	        
+	      circles=cv2.HoughCircles(roi,cv2.HOUGH_GRADIENT,1,200,param1=200,param2=13,minRadius=int(w/3),maxRadius=int(w/2))
+	      #cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)  
 	      #cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2-xrange1,y+yrange),(0,255,0),2)
 	      #cv2.rectangle(frame,(x+(xrange1)/2,y),(x+(xrange1)/2+xrange1,y+yrange),(0,255,0),2)
 	     
@@ -187,17 +187,18 @@ while(1):
 	 	  if abs(cx-(x+xop))>8 or abs(cy-(y+yop))>8:
 			continue
 		  print "ball"
-		  cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)
+		  
 		  cv2.circle(frame,(xop+x,yop+y),maxval,(0,255,0),4)
 		  cv2.circle(frame,(xop+x,yop+y),2,(255,0,0),2)
+		  #cv2.rectangle(frame,(x,y),(x+xrange1,y+yrange),(0,255,0),2)
 	      else:
 		  print("no ball")
     
     	 
 
     cv2.imshow('frame',frame)
-    cv2.imshow('para',frame)
-    cv2.imshow('res',mask)
+    #cv2.imshow('para',frame)
+    #cv2.imshow('res',mask)
 
     k=cv2.waitKey(2) & 0xFF
     if k==27:
