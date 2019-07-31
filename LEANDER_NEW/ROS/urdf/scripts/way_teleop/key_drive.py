@@ -73,11 +73,11 @@ g = open("lon_only.txt",'w')
 
 lat1=0
 lon1=0
-count = -1
+sampling_GPS = -1
 def callback_gps(msg):
-    global lat1, lon1,count
-    count+=1
-    print(count)
+    global lat1, lon1,sampling_GPS
+    sampling_GPS+=1
+    #print(sampling_GPS)
 
     lat1 = msg.latitude
     lon1 = msg.longitude
