@@ -3,14 +3,18 @@ import rospy
 from geometry_msgs.msg import Twist
 from pynput import keyboard
 from pynput.keyboard import Key
+from sensor_msgs.msg import NavSatFix
 
 ob1 = Twist()
+
+f = open("lat_only.txt",'w')
+g = open("lon_only.txt",'w')
 
 
 def forward():
     global  ob1
     #print("FORWARD")
-    ob1.linear.x = 0.5
+    ob1.linear.x = 1.0
     ob1.linear.y = 0
     ob1.linear.z = 0
 
@@ -42,7 +46,7 @@ def right():
 
     ob1.angular.x = 0
     ob1.angular.y = 0
-    ob1.angular.z = 2.5
+    ob1.angular.z = 3.0
     pub.publish(ob1)
 
 
@@ -54,7 +58,7 @@ def left():
 
     ob1.angular.x = 0
     ob1.angular.y = 0
-    ob1.angular.z = -2.5
+    ob1.angular.z = -3.0
     pub.publish(ob1)
 
 
@@ -62,17 +66,26 @@ def brutestop():
     ob1 = Twist()
     pub.publish(ob1)
 
+
+
 lat1=0
 lon1=0
-
+sampling_GPS = -1
 def callback_gps(msg):
-    global lat1, lon1
-    
+    global lat1, lon1,sampling_GPS
+    sampling_GPS+=1
+    #print(sampling_GPS)
+
     lat1 = msg.latitude
     lon1 = msg.longitude
+    if sampling_GPS %100==0:
+        f.write(str(lat1) + '\n')
+        g.write(str(lon1) + '\n')
 
 def talk_listen():
     global lat1, lon1,ob1
+
+    rospy.Subscriber("gps_topic", NavSatFix, callback_gps)
 
     def callb(key):  # what to do on key-release
 
@@ -94,6 +107,7 @@ def talk_listen():
 
         return False  # stop detecting more key-presses
 
+
     while not rospy.is_shutdown():
 
 
@@ -113,5 +127,8 @@ if __name__ == '__main__':
 
         talk_listen()
     except rospy.ROSInterruptException:
-        pass
+        f.close()
+        g.close()
+
+
 
