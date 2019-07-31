@@ -81,7 +81,7 @@ def callback_gps(msg):
 
     lat1 = msg.latitude
     lon1 = msg.longitude
-    if count %100==0:
+    if sampling_GPS %100==0:
         f.write(str(lat1) + '\n')
         g.write(str(lon1) + '\n')
 
