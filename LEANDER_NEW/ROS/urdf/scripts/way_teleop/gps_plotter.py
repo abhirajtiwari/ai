@@ -1,7 +1,6 @@
 import rospy
 from sensor_msgs.msg import NavSatFix
 from matplotlib import pyplot as plt
-import numpy as np
 
 plt.rcParams["font.size"] =7
 
@@ -9,6 +8,9 @@ counter =-1
 
 lat1_temp = 0
 lon1_temp = 0
+
+f = open("lat_only.txt",'w')
+g = open("lon_only.txt",'w')
 
 def callback_gps(msg):
     global counter,lat1_temp,lon1_temp
@@ -24,8 +26,10 @@ def callback_gps(msg):
         if abs(round(msg.latitude, 6) - lat1_temp)>1e-6 or abs(round(msg.longitude, 6) - lon1_temp) >1e-6:
             lat1 = round(msg.latitude,6)
             lon1 = round(msg.longitude,6)
-            #print(2)
-            print(lat1,lon1)
+
+            f.write(str(lat1) + '\n')
+            g.write(str(lon1) + '\n')
+
             lat1_temp = lat1
             lon1_temp = lon1
             plt.plot(lon1, lat1, '*')
@@ -33,24 +37,6 @@ def callback_gps(msg):
 
             plt.draw()
             plt.pause(0.00000000001)
-
-
-
-
-
-    #lat1 = round(msg.latitude,6)
-    #lon1 = round(msg.longitude,6)
-
-    #print(lat1,lon1)
-
-    #plt.plot(lon1, lat1, '*')
-    #plt.margins(x=1.0,y=1.0)
-
-    #plt.draw()
-    #plt.pause(0.00000000001)
-
-
-
 
 
 def listener():
@@ -70,6 +56,5 @@ if __name__ == '__main__':
 
 
     except rospy.ROSInterruptException:
-        pass
-
-
+        f.close()
+        g.close()
