@@ -197,7 +197,7 @@ def listener():
             lat2 = float(lat2)
             lon2 = float(lon2)
 
-            while (dist>0.3):
+            while (dist>0.2):
 
                 waypoint_replay(lat2,lon2)
                 t = heading - degree
@@ -223,4 +223,5 @@ if __name__ == '__main__':
 
     except rospy.ROSInterruptException:
         b.close()
+
 
