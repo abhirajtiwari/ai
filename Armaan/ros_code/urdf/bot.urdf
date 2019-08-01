@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<robot name="bot">
+  <link name="base_link">
+  <inertial>
+	<mass value="1.4356"/>
+	<inertia ixx="0.154762" ixy="0" ixz="0" iyy="0.874812" iyz="0" izz="0.959317"/>
+</inertial>
+
+    <visual>
+      <geometry>
+
+        <box size="0.3 0.15 0.1" />
+      </geometry>
+      <origin xyz="0 0 0.07"/>
+    </visual>
+  </link>
+<gazebo reference="base_link">
+<material>Gazebo/Blue</material>
+<turnGravityOff>false</turnGravityOff>
+</gazebo>
+ <link name="wheel_right">
+	<inertial>
+	
+        <mass value="1"/>
+        <inertia ixx="0.145833" ixy="0" ixz="0" iyy="0.145833" iyz="0" izz="0.125"/>
+	</inertial>
+	<collision name='collision'>
+	<geometry>
+		<cylinder length="0.04"  radius="0.06" />.
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="0.15 0.10 0.02" />
+	<material name="white"/>
+	<collision/>
+	
+	<visual>
+		<geometry>
+			<cylinder length="0.04"  radius="0.06" />.
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="0.15 0.10 0.02" />
+	<material name="white"/>
+	</visual>
+</link> 
+<gazebo reference="wheel_right">
+<material>Gazebo/White</material>
+<turnGravityOff>false</turnGravityOff>
+</gazebo>
+<link name="wheel_left">
+	<inertial>
+	
+        <mass value="1"/>
+        <inertia ixx="0.145833" ixy="0" ixz="0" iyy="0.145833" iyz="0" izz="0.125"/>
+	</inertial>
+	<collison name="collision">
+	<geometry>
+	<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="0.15 -0.10 0.02" />
+	<material name="white"/>
+	<collison/>
+	
+	<visual>
+		<geometry>
+			<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="0.15 -0.10 0.02" />
+	<material name="white"/>
+	</visual>
+</link>
+<gazebo reference="wheel_left">
+<material>Gazebo/White</material>
+<turnGravityOff>false</turnGravityOff>
+</gazebo>
+<joint name="base_to_left_leg" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_left"/>
+    <origin xvz="0.15 -0.10 0.02"/>
+    <axis xyz="0 1 0"/>
+<dynamics damping="0" friction="1.0"/>
+</joint>
+ 
+<link name="wheel_rb">
+<inertial>
+	
+        <mass value="1"/>
+        <inertia ixx="0.145833" ixy="0" ixz="0" iyy="0.145833" iyz="0" izz="0.125"/>
+	</inertial>
+
+<collision name="collision">
+ <geometry>
+	<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="-0.15 0.10 0.02" />
+	<material name="white"/>
+<collision/>
+ <visual>
+
+   <geometry>
+	<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="-0.15 0.10 0.02" />
+	<material name="white"/>
+	
+	</visual>
+</link>
+<gazebo reference="wheel_rb">
+<material>Gazebo/White</material>
+<turnGravityOff>false</turnGravityOff>
+</gazebo>
+ 
+<link name="wheel_lb">
+<inertial>
+	
+        <mass value="1"/>
+        <inertia ixx="0.145833" ixy="0" ixz="0" iyy="0.145833" iyz="0" izz="0.125"/>
+	</inertial>
+<collision name="collision">
+<geometry>
+	<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="-0.15 -0.1 0.02" />
+	<material name="White"/>
+<collision/>
+
+ <visual>
+   <geometry>
+	<cylinder length="0.04"  radius="0.06" />
+				</geometry>
+	<origin  rpy="1.57075 1.57075 0" xyz="-0.15 -0.1 0.02" />
+	<material name="White"/>
+	</visual>
+</link> 
+<gazebo reference="wheel_lb">
+<material>Gazebo/White</material>
+<turnGravityOff>false</turnGravityOff>
+</gazebo>
+<joint name="base_to_left_legback" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_lb"/>
+    <origin xvz="-0.15 -0.1 0.02"/>
+    <axis xyz="0 1 0"/>
+<dynamics damping="0" friction="1.0"/>
+</joint>
+
+
+<joint name="base_to_right_leg" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_right"/>
+    <origin xvz="0.15 0.10 0.02"/>
+    <axis xyz="0 1 0"/>
+<dynamics damping="0" friction="1.0"/>
+</joint>
+	
+<joint name="base_to_right_legback" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_rb"/>
+    <origin xvz="-0.15 0.1 0.02"/>
+    <axis xyz="0 1 0"/>
+<dynamics damping="0" friction="1.0"/>
+</joint>
+	
+</robot>
