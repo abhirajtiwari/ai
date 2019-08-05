@@ -1,0 +1,26 @@
+<annotation>
+	<folder>finalballnew</folder>
+	<filename>77.jpg</filename>
+	<path>/home/armaan/Desktop/mrm/dataset_day2/finalballnew/77.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>480</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>ball</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>358</xmin>
+			<ymin>147</ymin>
+			<xmax>400</xmax>
+			<ymax>189</ymax>
+		</bndbox>
+	</object>
+</annotation>
