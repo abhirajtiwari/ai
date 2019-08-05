@@ -71,16 +71,16 @@ curved_path = smooth(path)
 
 fig, axs = plt.subplots(1, 2, constrained_layout=True)
 
-axs[0].plot(path[:,0],path[:,1],'-gD')
+axs[0].plot(path[:,1],path[:,0],'-gD')
 axs[0].set_title('ORIGINAL PLOT')
-axs[0].set_xlabel('LATITUDE')
-axs[0].set_ylabel('LONGITUDE')
+axs[0].set_xlabel('LONGITUDE')
+axs[0].set_ylabel('LATITUDE')
 fig.suptitle('GPS WAYPOINTS', fontsize=10)
 
 axs[1].plot(curved_path[:,0],curved_path[:,1],'-gD')
 axs[1].set_title('CURVE FITTED PLOT')
-axs[1].set_xlabel('LATITUDE')
-axs[1].set_ylabel('LONGITUDE')
+axs[1].set_xlabel('LONGITUDE')
+axs[1].set_ylabel('LATITUDE')
 
 printpaths(path, smooth(path))
 
