@@ -12,7 +12,8 @@
     <param name="base_link_frame" value="base_link" />
     <param name="world_frame" value="odom" />
 
-    <param name="imu0" value="/imu" />
+    <param name="imu0" value="/imu" />_,
+
     <param name="imu0_differential" value="false"/>
     <param name="imu0_remove_gravitational_acceleration" value="false"/>
     <rosparam param="imu0_config">
@@ -45,13 +46,13 @@ false, false, false]
     <param name="odom_frame" value="odom" />
     <param name="base_link_frame" value="base_link" />
     <param name="world_frame" value="map" />
-
+_
     <param name="imu0" value="/imu" />
     <param name="imu0_differential" value="true"/>
     <param name="imu0_remove_gravitational_acceleration" value="false"/>
     <rosparam param="imu0_config">
       [false, false, false,
-      false, false, true,
+      false, false, true,_
        false, false, false,
        false, false, true,
        true, false, false]</rosparam>
@@ -84,7 +85,7 @@ false, false, false]
   <param name="yaw_offset" value="1.5707963"/>
   <param name="publish_filtered_gps" value="true"/>
   <remap from="imu/data" to="/imu" />
-  <remap from="gps/fix" to="/fix" />
+  <remap from="gps/fix" to="/fix" />_
   <remap from="odometry/filtered" to="odometry/r_gps_odom" />
 
 </node>

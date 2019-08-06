@@ -1,2 +1,2 @@
-beginner_tutorials:models
+android:beginner_tutorials:models:proto:realsense-ros/realsense2_camera:realsense-ros/realsense2_description
 -DCATKIN_DEVEL_PREFIX=/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel -DCMAKE_INSTALL_PREFIX=/home/abhiraj/MRM/ai/Abhiraj/ros_try/install -G Unix Makefiles

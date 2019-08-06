@@ -1,0 +1,8 @@
+prefix=/home/abhiraj/MRM/ai/Abhiraj/ros_try/install
+
+Name: android
+Description: Description of android
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/lib 
+Requires: 

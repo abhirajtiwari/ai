@@ -11,7 +11,7 @@ import socket
 #Server setup for recieving GPS data
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = 6000
-client_address = ('192.168.29.10', port)
+client_address = ('192.168.43.10', port)
 
 #Init rospy stuff
 rospy.init_node("gps_publisher.py", anonymous=True)

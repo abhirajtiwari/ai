@@ -138,8 +138,8 @@ struct Definition< ::beginner_tutorials::Num_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "int64 num\n\
-";
+    return "int64 num\n"
+;
   }
 
   static const char* value(const ::beginner_tutorials::Num_<ContainerAllocator>&) { return value(); }

@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "")
+    set(CMAKE_INSTALL_CONFIG_NAME "Release")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -73,38 +73,47 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.bash")
+   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.bash;/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/local_setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.bash")
+file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.bash"
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/local_setup.bash"
+    )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.sh")
+   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.sh;/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/local_setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.sh")
+file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.sh"
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/local_setup.sh"
+    )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.zsh")
+   "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/setup.zsh;/home/abhiraj/MRM/ai/Abhiraj/ros_try/install/local_setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.zsh")
+file(INSTALL DESTINATION "/home/abhiraj/MRM/ai/Abhiraj/ros_try/install" TYPE FILE FILES
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/setup.zsh"
+    "/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/catkin_generated/installspace/local_setup.zsh"
+    )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -121,9 +130,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/gtest/cmake_install.cmake")
   include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/models/cmake_install.cmake")
+  include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/realsense-ros/realsense2_description/cmake_install.cmake")
+  include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/android/cmake_install.cmake")
   include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/beginner_tutorials/cmake_install.cmake")
+  include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/proto/cmake_install.cmake")
+  include("/home/abhiraj/MRM/ai/Abhiraj/ros_try/build/realsense-ros/realsense2_camera/cmake_install.cmake")
 
 endif()
 

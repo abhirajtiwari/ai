@@ -143,9 +143,9 @@ struct Definition< ::beginner_tutorials::AddTwoIntsRequest_<ContainerAllocator> 
 {
   static const char* value()
   {
-    return "int64 a\n\
-int64 b\n\
-";
+    return "int64 a\n"
+"int64 b\n"
+;
   }
 
   static const char* value(const ::beginner_tutorials::AddTwoIntsRequest_<ContainerAllocator>&) { return value(); }

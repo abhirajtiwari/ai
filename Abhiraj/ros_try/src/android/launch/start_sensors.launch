@@ -14,7 +14,7 @@
 
   <node name="nmea_publisher" pkg="android" type="gps_publisher.py"/>
   <node name="nmea_topic_driver" pkg="nmea_navsat_driver" type="nmea_topic_driver">
-	  <remap from="/fix" to="/phone/pre_fix"/>
+	  <!-- <remap from="/fix" to="/phone/pre_fix"/> -->
   </node>
   <node name="gps_correcter" pkg="android" type="gps_correcter.py"/>
 

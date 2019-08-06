@@ -1,0 +1,8 @@
+prefix=/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel
+
+Name: realsense2_camera
+Description: Description of realsense2_camera
+Version: 2.2.7
+Cflags: -I/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel/include
+Libs: -L/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel/lib -lrealsense2_camera
+Requires: message_runtime roscpp sensor_msgs std_msgs nodelet cv_bridge image_transport ddynamic_reconfigure nav_msgs

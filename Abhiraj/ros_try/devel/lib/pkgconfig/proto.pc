@@ -1,0 +1,8 @@
+prefix=/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel
+
+Name: proto
+Description: Description of proto
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/abhiraj/MRM/ai/Abhiraj/ros_try/devel/lib 
+Requires: 
