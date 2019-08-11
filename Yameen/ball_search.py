@@ -24,7 +24,6 @@ def forward():
     ob1.angular.x = 0
     ob1.angular.y = 0
     ob1.angular.z = 0
-    
     pub.publish(ob1)
 
 def backward():
@@ -50,7 +49,7 @@ def right():
 
     ob1.angular.x = 0
     ob1.angular.y = 0
-    ob1.angular.z = 1.5
+    ob1.angular.z = 0.5
     pub.publish(ob1)
 
 
@@ -61,7 +60,7 @@ def left():
     ob1.linear.y = 0
     ob1.linear.z = 0
     ob1.angular.y = 0
-    ob1.angular.z = -1.5
+    ob1.angular.z = -0.5
     pub.publish(ob1)
 
 
@@ -100,14 +99,11 @@ def callback_gps(msg):
         init_lat = msg.latitude
         init_lon = msg.longitude
         count = count+1
-
-    print(lat1,lon1,'lati,longi')
     lat2 = msg.latitude
     lon2 = msg.longitude
 
     dist = m.sqrt((lat2-init_lat)*(lat2-init_lat)+(lon2-init_lon)*(lon2-init_lon))*100000
     distance_from_gps_point = m.sqrt((lat_gps-lat2)*(lat_gps-lat2)+(lon_gps-lon2)*(lon_gps-lon2))*100000
-    print('dist',dist,distance_from_gps_point)
 
 def callback_imu(msg):
     global count_imu,heading
@@ -116,7 +112,7 @@ def callback_imu(msg):
     heading = map(yaw, 0, -3, 0, 180)
     if heading < 0:
         heading += 360
-    print(heading,'this is the heading')
+
 
 
 #########################49.90008734734606, 8.899825168243158#############GPS point###########distance from origin##########15.632623717678888
@@ -124,12 +120,10 @@ def ball_search_not_correct():
     global flag,init_head,init_lat,init_lon,heading,flag1,flag3,doorie,lat2,lon2
     if distance_from_gps_point<20:
         if flag == 0:
-            print (flag,'flag')
             init_head = heading
             init_lat = lat2
             init_lon = lon2
             flag = 1
-        print("you have to find me")
         print(init_head,heading,distance_from_gps_point)
         if flag1==0:
             flag1=1
@@ -149,32 +143,276 @@ def ball_search_not_correct():
             while abs(init_head-heading)<90:
                 left()
                 print abs(init_head-heading)
-                print('ye chand sa roshan chehra')
-            print('kuch dikh kya???')
             brutestop()
 
+def gogogo():
+    global flag, init_lat,lat2,init_lon,lon2,heading,dist
+    if flag == 0:
+        flag = 1
+        init_lat = lat2
+        init_lon = lon2
+    print('heading and lati and dist ',heading,lat2, dist)
+
+
+def Go_2m():
+    global dist
+    while (dist<2):
+        gogogo()
+        forward()
+    brutestop()
+
+def Go_4m():
+    global dist
+    while (dist<4):
+        gogogo()
+        forward()
+    brutestop()
+
 def ball_search():
-    global lat2,lon2,dist,heading,distance_from_gps_point, init_head, init_lat, init_lon, flag, dist
+    global lat2,lon2,dist,heading, distance_from_gps_point, init_head, init_lat, init_lon, flag, dist, flag1, flag2
     print('inside ball search')
-    if distance_from_gps_point<15:
+    print('inside 1', dist, heading, distance_from_gps_point)
+    if distance_from_gps_point<26:
         if flag == 0:
             flag = 1
             init_lat = lat2
             init_lon = lon2
             while (heading>4 and heading<356):
-                print(heading,'<----')
+                print('right')
                 right()
             brutestop()
-        while (dist<1):
-            print(dist,'-------------+++++++++++++')
-            forward()
-            print(heading,'the head isssss')
-        brutestop()
+        dist =0
+        flag=0
+        Go_2m()
+
         while heading>270 or heading<5:
-            print('heading+++++++',heading)
+            print('1')
             left()
         brutestop()
-        
+        print(dist)
+        dist = 0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('2')
+            left()
+        brutestop()        
+        print(dist,init_lat,lat2)
+        dist = 0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('3')
+            right()
+        brutestop()
+        print(heading)
+        dist = 0
+        flag=0
+        Go_4m()
+
+        while heading<357 and heading>3:
+            print('4')
+            right()
+        brutestop()
+        dist = 0
+        flag=0
+        Go_2m()
+
+        while heading<90 or heading>357:
+            print('5')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>2 and heading<357:
+            print('6')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>270 or heading<5:
+            print('7')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<357 and heading>3:
+            print('8')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<90 or heading>357:
+            print('9')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading<180:
+            print('10')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>90:
+            print('11')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>3 and heading<358:
+            print('12')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading>270 or heading<5:
+            print('13')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<357 and heading>3:
+            print('14')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<90 or heading>357:
+            print('15')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>2 and heading<357:
+            print('16')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading>270 or heading<5:
+            print('17')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('18')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('19')
+            right()
+        brutestop()        
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<357 and heading>3:
+            print('20')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>270 or heading<5:
+            print('21')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('22')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading>90:
+            print('23')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<180:
+            print('24')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('25')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading<357 and heading>3:
+            print('26')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<90 or heading>357:
+            print('27')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>2 and heading<357:
+            print('28')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_4m()
+
+                        
 
 
 
@@ -224,6 +462,7 @@ if __name__ == '__main__':
         count_imu = 0
         flag = 0
         flag1=0
+        flag2=0
         flag3=0
         pub = rospy.Publisher('arrow_control', Twist, queue_size=10)
         print(pub)
