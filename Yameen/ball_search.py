@@ -8,9 +8,13 @@ from pynput.keyboard import Key
 from tf.transformations import euler_from_quaternion
 import math as m
 import time
-
+import matplotlib.pyplot as plt
+import numpy
 
 ob1 = Twist()
+
+lats = []
+lons = []
 
 def map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
@@ -117,7 +121,7 @@ def callback_imu(msg):
 
 #########################49.90008734734606, 8.899825168243158#############GPS point###########distance from origin##########15.632623717678888
 def ball_search_not_correct():
-    global flag,init_head,init_lat,init_lon,heading,flag1,flag3,doorie,lat2,lon2
+    global flag,init_head,init_lat,init_lon,heading,flag1,flag3,doorie,lat2,lon2,lats,longs
     if distance_from_gps_point<20:
         if flag == 0:
             init_head = heading
@@ -135,6 +139,8 @@ def ball_search_not_correct():
         if doorie<1:
             print('dekho mujhe',lat2,lon2)
             forward()
+            lats.append(lat2)
+            lons.append(lon2)
         elif doorie>1:
             #brutestop()
             if flag3==0:
@@ -152,6 +158,11 @@ def gogogo():
         init_lat = lat2
         init_lon = lon2
     print('heading and lati and dist ',heading,lat2, dist)
+
+def update_line(hl, new_data_lat, new_data_lon):
+    hl.set_xdata(numpy.append(hl.get_xdata(), new_data_lat))
+    hl.set_ydata(numpy.append(hl.get_ydata(), new_data_lon))
+    plt.draw()
 
 
 def Go_2m():
@@ -172,7 +183,7 @@ def ball_search():
     global lat2,lon2,dist,heading, distance_from_gps_point, init_head, init_lat, init_lon, flag, dist, flag1, flag2
     print('inside ball search')
     print('inside 1', dist, heading, distance_from_gps_point)
-    if distance_from_gps_point<26:
+    if distance_from_gps_point<1148069:
         if flag == 0:
             flag = 1
             init_lat = lat2
@@ -180,6 +191,8 @@ def ball_search():
             while (heading>4 and heading<356):
                 print('right')
                 right()
+            lats.append(lat2)
+            lons.append(lon2)
             brutestop()
         dist =0
         flag=0
@@ -188,6 +201,8 @@ def ball_search():
         while heading>270 or heading<5:
             print('1')
             left()
+        lats.append(lat2)
+        lons.append(lon2)
         brutestop()
         print(dist)
         dist = 0
@@ -198,6 +213,8 @@ def ball_search():
             print('2')
             left()
         brutestop()        
+        lats.append(lat2)
+        lons.append(lon2)
         print(dist,init_lat,lat2)
         dist = 0
         flag=0
@@ -207,6 +224,8 @@ def ball_search():
             print('3')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         print(heading)
         dist = 0
         flag=0
@@ -216,6 +235,8 @@ def ball_search():
             print('4')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist = 0
         flag=0
         Go_2m()
@@ -224,6 +245,8 @@ def ball_search():
             print('5')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -232,6 +255,8 @@ def ball_search():
             print('6')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -240,6 +265,8 @@ def ball_search():
             print('7')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -248,6 +275,8 @@ def ball_search():
             print('8')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -256,6 +285,8 @@ def ball_search():
             print('9')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)        
         dist=0
         flag=0
         Go_4m()
@@ -264,6 +295,8 @@ def ball_search():
             print('10')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -272,6 +305,8 @@ def ball_search():
             print('11')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -280,6 +315,8 @@ def ball_search():
             print('12')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_4m()
@@ -288,6 +325,8 @@ def ball_search():
             print('13')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -296,6 +335,8 @@ def ball_search():
             print('14')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -304,6 +345,8 @@ def ball_search():
             print('15')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -312,6 +355,8 @@ def ball_search():
             print('16')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_4m()
@@ -320,6 +365,8 @@ def ball_search():
             print('17')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -328,6 +375,8 @@ def ball_search():
             print('18')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -335,7 +384,9 @@ def ball_search():
         while heading<270:
             print('19')
             right()
-        brutestop()        
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)        
         dist=0
         flag=0
         Go_2m()
@@ -344,6 +395,8 @@ def ball_search():
             print('20')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -352,6 +405,8 @@ def ball_search():
             print('21')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -360,6 +415,8 @@ def ball_search():
             print('22')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_4m()
@@ -368,6 +425,8 @@ def ball_search():
             print('23')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -376,6 +435,8 @@ def ball_search():
             print('24')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -384,6 +445,8 @@ def ball_search():
             print('25')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_4m()
@@ -392,6 +455,8 @@ def ball_search():
             print('26')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -400,6 +465,8 @@ def ball_search():
             print('27')
             right()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_2m()
@@ -408,11 +475,237 @@ def ball_search():
             print('28')
             left()
         brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
         dist=0
         flag=0
         Go_4m()
 
-                        
+        while heading>270 or heading<5:
+            print('29')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('30')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('31')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<357 and heading>3:
+            print('32')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>270 or heading<5:
+            print('33')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('34')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_4m()
+                                
+        while heading>90:
+            print('35')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<180:
+            print('36')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('37')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('38')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading>90:
+            print('39')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>3 and heading<358:
+            print('40')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<90 or heading>357:
+            print('41')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading<180:
+            print('42')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('43')
+            right()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('44')
+            left()
+        brutestop()
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>90:
+            print('45')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<180:
+            print('46')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading<270:
+            print('47')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_4m()
+
+        while heading<357 and heading>3:
+            print('48')
+            right()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>270 or heading<5:
+            print('49')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        while heading>180:
+            print('50')
+            left()
+        brutestop()
+        lats.append(lat2)
+        lons.append(lon2)
+        dist=0
+        flag=0
+        Go_2m()
+
+        flag=1
+
+        hl, = plt.plot(lats, lons)
+        for i,j in zip(lats,lons):
+            update_line(hl,i,j)
+            
+        print('ooooooo do u see MEEEEEEE')
+        plt.show()
+
 
 
 
