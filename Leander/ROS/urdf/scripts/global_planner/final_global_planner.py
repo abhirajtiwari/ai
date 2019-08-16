@@ -111,7 +111,12 @@ def brutestop():
 
 def C(x, y, h, k, r):
     # TANGENT LENGTH
-    return sqrt(abs((x - h) ** 2 + (y - k) ** 2 - r ** 2))
+    return abs((x - h) ** 2 + (y - k) ** 2 - r ** 2)
+
+
+def C1(x, y, h, k, r):
+    # TANGENT LENGTH
+    return (x - h) ** 2 + (y - k) ** 2 - r ** 2
 
 
 def callback_imu(msg):
@@ -173,13 +178,13 @@ dist_C = 10
 dist_D = 10
 
 # GPS COORDINATES
-x_g = 38.421091
-y_g = -110.779323
+x_g = 38.419823
+y_g = -110.780039
 
 heading = 0
 degree = 0
 
-f = open("blacklister1.txt")
+f = open("blacklister2.txt")
 
 H, K, R = [], [], []
 for l in f:
@@ -188,7 +193,17 @@ for l in f:
     K.append(float(row[1]))
     R.append(float(row[2]))
 
+L1 = len(H)
+
+for i in range(L1):
+    if C1(x_g,y_g,H[i],K[i],R[i]) < 0:
+        del(H[i])
+        del(K[i])
+        del(R[i])
+
 length = len(H)
+
+
 
 D = []
 indexing = []
@@ -287,7 +302,7 @@ def bloody_calculate():
     # EXECUTE ESCAPE PROTOCOL
 
     # ROVER SIDE
-    l1r = C(x_r, y_r, h, k, r)
+    l1r = sqrt(C(x_r, y_r, h, k, r))
     l2r = r
     l3r = cartesian_distance(x_r, y_r, h, k)
 
@@ -303,7 +318,7 @@ def bloody_calculate():
     Cy2 = y_r + l1r * sin(phi1r - phi2r)
 
     # GPS SIDE
-    l1g = C(x_g, y_g, h, k, r)
+    l1g = sqrt(C(x_g, y_g, h, k, r))
     l2g = r
     l3g = cartesian_distance(h, k, x_g, y_g)
 
