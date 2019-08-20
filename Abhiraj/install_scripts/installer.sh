@@ -1,8 +1,8 @@
 #!/bin/bash
 option=0
-while [ option != 7 ]
+while [ $option != 7 ]
 do
-printf "[0] Install ROS \n[1] Clone repo \n[2] Install robot-localisation \n[3] Install rtabmap \n[4] Install realsense \n[5] Install mapviz \n[6] Install python deps \n[7] Quit"
+printf "\n[0] Install ROS \n[1] Clone repo \n[2] Install robot-localisation \n[3] Install rtabmap \n[4] Install realsense \n[5] Install mapviz \n[6] Install python deps \n[7] Quit\n"
 read option
 
 if [ $option == 0 ]
@@ -75,4 +75,5 @@ then
 	pip3 install sockets pygame pyproj pyserial pyqt5
 	
 fi
+
 done
