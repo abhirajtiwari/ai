@@ -21,6 +21,11 @@ then
 		sudo apt install ros-melodic-ros-base -y
 	fi
 	echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
+	mkdir ~/catkin_ws/src
+	cd ~/catkin_ws/src
+	catkin_init_workspace
+	cd ..
+	catkin_make
 	echo "source $HOME/catkin_ws/devel/setup.bash" >> ~/.bashrc
 	source ~/.bashrc
 
