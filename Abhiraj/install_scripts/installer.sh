@@ -37,7 +37,7 @@ then
 
 elif [ $option == 2 ]
 then
-	sudo apt install ros-$ROS_DISTRO-robot-localisation ros-$ROS_DISTRO-nmea-navsat-driver ros-$ROS_DISTRO-imu-filter-madgwick -y
+	sudo apt install ros-$ROS_DISTRO-robot-localization ros-$ROS_DISTRO-nmea-navsat-driver ros-$ROS_DISTRO-imu-filter-madgwick -y
 
 elif [ $option == 3 ]
 then
